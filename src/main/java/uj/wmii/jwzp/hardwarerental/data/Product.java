@@ -9,17 +9,17 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long product_id;
     private String companyName;
     private String model;
     private BigDecimal price;
     private Boolean isAvailable;
-    public Long getId() {
-        return id;
+    public Long getProduct_id() {
+        return product_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setProduct_id(Long id) {
+        this.product_id = id;
     }
 
     public String getCompanyName() {
@@ -53,6 +53,13 @@ public class Product {
     public void setAvailable(Boolean available) {
         isAvailable = available;
     }
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    private Category category;
+    public void setCategory(Category _category)
+    {
+        this.category = _category;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -61,22 +68,23 @@ public class Product {
 
         Product product = (Product) o;
 
-        return id.equals(product.id);
+        return product_id.equals(product.product_id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return product_id.hashCode();
     }
 
     @Override
     public String toString() {
         return "Product{" +
-                "id=" + id +
+                "id=" + product_id +
                 ", companyName='" + companyName + '\'' +
                 ", model='" + model + '\'' +
                 ", price=" + price +
                 ", isAvailable=" + isAvailable +
                 '}';
     }
+
 }

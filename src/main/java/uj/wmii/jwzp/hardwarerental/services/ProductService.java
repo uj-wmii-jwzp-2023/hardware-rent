@@ -1,6 +1,7 @@
 package uj.wmii.jwzp.hardwarerental.services;
 
 
+import uj.wmii.jwzp.hardwarerental.data.Category;
 import uj.wmii.jwzp.hardwarerental.data.Product;
 
 import java.util.List;
@@ -21,5 +22,6 @@ public interface ProductService {
     void deleteProductById(Long id);
 
     List<Product> returnProductsByAvailability(Boolean availability);
+
 
 }

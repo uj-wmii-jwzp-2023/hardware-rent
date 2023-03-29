@@ -36,7 +36,7 @@ public class ProductController {
         Product savedProduct = productService.addNewProduct(product);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/products" + savedProduct.getId().toString());
+        headers.add("Location", "/products" + savedProduct.getProduct_id().toString());
 
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }

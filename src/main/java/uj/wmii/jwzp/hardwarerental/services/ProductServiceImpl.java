@@ -1,6 +1,7 @@
 package uj.wmii.jwzp.hardwarerental.services;
 
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uj.wmii.jwzp.hardwarerental.data.Product;
@@ -98,4 +99,6 @@ public class ProductServiceImpl implements ProductService {
 
         return results;
     }
+
+
 }

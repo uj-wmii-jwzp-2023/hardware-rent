@@ -2,6 +2,7 @@ package uj.wmii.jwzp.hardwarerental.services;
 
 import org.springframework.stereotype.Service;
 import uj.wmii.jwzp.hardwarerental.data.Category;
+import uj.wmii.jwzp.hardwarerental.data.Product;
 import uj.wmii.jwzp.hardwarerental.repositories.CategoryRepository;
 
 import java.util.List;
@@ -29,5 +30,10 @@ public class CategoryServiceImpl implements CategoryService {
         Category savedCategory = categoryRepository.save(myCategory);
 
         return savedCategory;
+    }
+    @Override
+    public List<Product> getProductsByCategoryId(Long categorId)
+    {
+        return categoryRepository.findProductByCategoryId(categorId);
     }
 }

@@ -3,23 +3,23 @@ package uj.wmii.jwzp.hardwarerental.data;
 
 import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long category_id;
     private String categoryName;
 
 
-    public Long getId() {
-        return id;
+    public Long getCategory_id() {
+        return category_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCategory_id(Long id) {
+        this.category_id = id;
     }
 
     public String getCategoryName() {
@@ -29,6 +29,12 @@ public class Category {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
+    @OneToMany(mappedBy="category")
+    private Set<Product> products;
+    public void setProducts(Set<Product> _products)
+    {
+        this.products = _products;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -37,18 +43,18 @@ public class Category {
 
         Category category = (Category) o;
 
-        return id.equals(category.id);
+        return category_id.equals(category.category_id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return category_id.hashCode();
     }
 
     @Override
     public String toString() {
         return "Category{" +
-                "id=" + id +
+                "id=" + category_id +
                 ", categoryName='" + categoryName + '\'' +
                 '}';
     }

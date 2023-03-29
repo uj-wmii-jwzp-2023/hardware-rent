@@ -39,7 +39,7 @@ public class CategoryController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
     @GetMapping("{categoryId}")
-    public List<Product> getProductById(@PathVariable("categoryId") Long categoryId) {
+    public List<Product> getProductsByCategoryId(@PathVariable("categoryId") Long categoryId) {
         return categoryService.getProductsByCategoryId(categoryId);
     }
 

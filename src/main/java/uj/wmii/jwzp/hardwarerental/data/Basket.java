@@ -1,19 +1,19 @@
 package uj.wmii.jwzp.hardwarerental.data;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 @Entity
-public class Order {
-
+public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long userId;
-    private BigDecimal moneyToPay;
-
+    @OneToMany(mappedBy = "basket", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    Set<Product> products;
 
     public Long getId() {
         return id;
@@ -23,20 +23,12 @@ public class Order {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Set<Product> getProducts() {
+        return products;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public BigDecimal getMoneyToPay() {
-        return moneyToPay;
-    }
-
-    public void setMoneyToPay(BigDecimal moneyToPay) {
-        this.moneyToPay = moneyToPay;
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
 
     @Override
@@ -44,9 +36,9 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Order order = (Order) o;
+        Basket basket = (Basket) o;
 
-        return id.equals(order.id);
+        return id.equals(basket.id);
     }
 
     @Override
@@ -56,10 +48,9 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order{" +
+        return "Basket{" +
                 "id=" + id +
-                ", userId=" + userId +
-                ", moneyToPay=" + moneyToPay +
+                ", products=" + products +
                 '}';
     }
 }

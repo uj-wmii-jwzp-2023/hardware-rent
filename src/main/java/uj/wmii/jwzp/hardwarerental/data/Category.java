@@ -1,9 +1,11 @@
 package uj.wmii.jwzp.hardwarerental.data;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Category {
@@ -13,6 +15,17 @@ public class Category {
     private Long id;
     private String categoryName;
 
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    Set<Product> products;
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
 
     public Long getId() {
         return id;
@@ -50,6 +63,7 @@ public class Category {
         return "Category{" +
                 "id=" + id +
                 ", categoryName='" + categoryName + '\'' +
+                ", products=" + products +
                 '}';
     }
 }

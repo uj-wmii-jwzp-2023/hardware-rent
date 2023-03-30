@@ -3,11 +3,9 @@ package uj.wmii.jwzp.hardwarerental.controllers;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerental.data.Category;
+import uj.wmii.jwzp.hardwarerental.data.Product;
 import uj.wmii.jwzp.hardwarerental.services.CategoryService;
 
 import java.util.List;
@@ -36,6 +34,11 @@ public class CategoryController {
 //        headers.add("Location", "/categories" + categoryId);
 
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @GetMapping("{categoryId}")
+    public List<Product> getProductsByCategoryId(@PathVariable("categoryId") Long categoryId) {
+        return categoryService.getProductsByCategoryId(categoryId);
     }
 
 }

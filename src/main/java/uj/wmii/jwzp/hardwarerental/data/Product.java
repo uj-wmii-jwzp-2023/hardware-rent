@@ -1,5 +1,6 @@
 package uj.wmii.jwzp.hardwarerental.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -14,6 +15,32 @@ public class Product {
     private String model;
     private BigDecimal price;
     private Boolean isAvailable;
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    @JsonBackReference
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "basket_id")
+    @JsonBackReference
+    private Basket basket;
+
+    public Basket getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Basket basket) {
+        this.basket = basket;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public Long getId() {
         return id;
     }
@@ -77,6 +104,8 @@ public class Product {
                 ", model='" + model + '\'' +
                 ", price=" + price +
                 ", isAvailable=" + isAvailable +
+                ", category=" + category +
+                ", basket=" + basket +
                 '}';
     }
 }

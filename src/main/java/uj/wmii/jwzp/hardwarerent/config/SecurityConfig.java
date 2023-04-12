@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import uj.wmii.jwzp.hardwarerent.models.MyUser;
+import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
 
 @Configuration

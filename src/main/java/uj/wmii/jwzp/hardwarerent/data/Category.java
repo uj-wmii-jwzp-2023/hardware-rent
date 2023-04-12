@@ -1,4 +1,4 @@
-package uj.wmii.jwzp.hardwarerent.models;
+package uj.wmii.jwzp.hardwarerent.data;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

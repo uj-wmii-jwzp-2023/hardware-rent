@@ -2,7 +2,7 @@ package uj.wmii.jwzp.hardwarerent.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import uj.wmii.jwzp.hardwarerent.models.Product;
+import uj.wmii.jwzp.hardwarerent.data.Product;
 import uj.wmii.jwzp.hardwarerent.repositories.ProductRepository;
 
 import java.util.List;

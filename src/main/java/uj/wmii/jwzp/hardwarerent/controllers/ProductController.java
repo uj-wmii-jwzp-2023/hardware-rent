@@ -4,7 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uj.wmii.jwzp.hardwarerent.models.Product;
+import uj.wmii.jwzp.hardwarerent.data.Product;
 import uj.wmii.jwzp.hardwarerent.services.ProductService;
 
 import java.net.URI;

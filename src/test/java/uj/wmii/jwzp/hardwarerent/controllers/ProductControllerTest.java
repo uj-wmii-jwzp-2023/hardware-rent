@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import uj.wmii.jwzp.hardwarerent.models.Product;
+import uj.wmii.jwzp.hardwarerent.data.Product;
 import uj.wmii.jwzp.hardwarerent.services.ProductService;
 
 import java.math.BigDecimal;

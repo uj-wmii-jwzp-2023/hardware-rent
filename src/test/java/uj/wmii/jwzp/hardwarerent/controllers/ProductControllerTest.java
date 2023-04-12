@@ -51,13 +51,13 @@ class ProductControllerTest {
 
     @BeforeEach
     public void setUp() {
-        productFirst.setId(1L);
+        productFirst.setProduct_id(1L);
         productFirst.setPrice(new BigDecimal("135.23"));
         productFirst.setCompanyName("Samsung");
         productFirst.setAvailable(true);
         productFirst.setModel("Galaxy A32");
 
-        productSecond.setId(2L);
+        productSecond.setProduct_id(2L);
         productSecond.setPrice(new BigDecimal("753.34"));
         productSecond.setCompanyName("Dell");
         productSecond.setAvailable(false);
@@ -88,7 +88,7 @@ class ProductControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(2)))
+                .andExpect(jsonPath("$.product_id", is(2)))
                 .andExpect(jsonPath("$.model", is("Latitude 5590")))
                 .andExpect(jsonPath("$.companyName", is("Dell")));
     }
@@ -96,7 +96,7 @@ class ProductControllerTest {
     @Test
     void testCreateNewProduct() throws Exception {
         Product newProduct = new Product();
-        newProduct.setId(3L);
+        newProduct.setProduct_id(3L);
         newProduct.setModel("IPhone XIV");
         newProduct.setAvailable(true);
         newProduct.setPrice(new BigDecimal("1400.34"));
@@ -155,7 +155,7 @@ class ProductControllerTest {
 
         assertEquals(1L, idArgumentCaptor.getValue());
         assertEquals(productArgumentCaptor.getValue().getCompanyName(), "Lenovo");
-        assertFalse(productArgumentCaptor.getValue().getAvailable());
+        assertFalse(productArgumentCaptor.getValue().isAvailable());
     }
 
     @Test
@@ -170,7 +170,7 @@ class ProductControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].product_id", is(1)))
                 .andExpect(jsonPath("$[0].available", is(true)));
     }
 }

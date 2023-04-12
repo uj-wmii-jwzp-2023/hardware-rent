@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
         savedProduct.setCompanyName(product.getCompanyName());
         savedProduct.setPrice(product.getPrice());
         savedProduct.setModel(product.getModel());
-        savedProduct.setAvailable(product.getAvailable());
+        savedProduct.setAvailable(product.isAvailable());
 
         return productRepository.save(savedProduct);
     }
@@ -44,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
     public Product updateWholeProductById(Long id, Product product) {
         Product existing = productRepository.findById(id).orElseThrow();
 
-        existing.setAvailable(product.getAvailable());
+        existing.setAvailable(product.isAvailable());
         existing.setModel(product.getModel());
         existing.setPrice(product.getPrice());
         existing.setCompanyName(product.getCompanyName());
@@ -67,8 +67,8 @@ public class ProductServiceImpl implements ProductService {
         if (StringUtils.hasText(product.getModel())) {
             existing.setModel(product.getModel());
         }
-        if (product.getAvailable() != null) {
-            existing.setAvailable(product.getAvailable());
+        if (product.isAvailable() != null) {
+            existing.setAvailable(product.isAvailable());
         }
         if (product.getPrice() != null) {
             existing.setPrice(product.getPrice());

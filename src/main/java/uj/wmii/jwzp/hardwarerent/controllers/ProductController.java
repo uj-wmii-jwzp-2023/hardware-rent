@@ -38,7 +38,7 @@ public class ProductController {
 
         Product savedProduct = productService.createNewProduct(product);
 
-        return ResponseEntity.created(URI.create("/products/" + savedProduct.getId()))
+        return ResponseEntity.created(URI.create("/products/" + savedProduct.getProduct_id()))
                 .body("Product has been successfully created!");
     }
 

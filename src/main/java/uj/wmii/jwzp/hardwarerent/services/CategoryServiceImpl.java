@@ -1,10 +1,11 @@
-package uj.wmii.jwzp.hardwarerental.services;
+package uj.wmii.jwzp.hardwarerent.services;
 
 import org.springframework.stereotype.Service;
-import uj.wmii.jwzp.hardwarerental.data.Category;
-import uj.wmii.jwzp.hardwarerental.repositories.CategoryRepository;
+import uj.wmii.jwzp.hardwarerent.models.Category;
+import uj.wmii.jwzp.hardwarerent.repositories.CategoryRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -21,13 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category addNewCategory(Category category) {
-
-        Category myCategory = new Category();
-        myCategory.setCategoryName(category.getCategoryName());
-
-        Category savedCategory = categoryRepository.save(myCategory);
-
-        return savedCategory;
+    public Optional<Category> getCategoryById(Long id) {
+        return Optional.empty();
     }
 }

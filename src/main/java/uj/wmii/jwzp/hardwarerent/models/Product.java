@@ -1,6 +1,9 @@
-package uj.wmii.jwzp.hardwarerental.data;
+package uj.wmii.jwzp.hardwarerent.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
 
@@ -14,6 +17,7 @@ public class Product {
     private String model;
     private BigDecimal price;
     private Boolean isAvailable;
+
     public Long getId() {
         return id;
     }
@@ -46,7 +50,7 @@ public class Product {
         this.price = price;
     }
 
-    public Boolean isAvailable() {
+    public Boolean getAvailable() {
         return isAvailable;
     }
 

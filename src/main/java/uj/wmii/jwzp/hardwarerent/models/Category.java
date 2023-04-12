@@ -1,18 +1,16 @@
-package uj.wmii.jwzp.hardwarerental.data;
+package uj.wmii.jwzp.hardwarerent.models;
 
-
-import jakarta.persistence.*;
-
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Category {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String categoryName;
-
 
     public Long getId() {
         return id;

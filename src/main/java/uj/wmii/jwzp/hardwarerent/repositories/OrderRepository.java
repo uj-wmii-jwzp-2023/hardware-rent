@@ -1,7 +1,7 @@
-package uj.wmii.jwzp.hardwarerental.repositories;
+package uj.wmii.jwzp.hardwarerent.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import uj.wmii.jwzp.hardwarerental.data.Order;
+import uj.wmii.jwzp.hardwarerent.data.Order;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 }

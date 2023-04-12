@@ -1,17 +1,13 @@
-package uj.wmii.jwzp.hardwarerental.controllers;
+package uj.wmii.jwzp.hardwarerent.controllers;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uj.wmii.jwzp.hardwarerental.data.Category;
-import uj.wmii.jwzp.hardwarerental.data.Product;
-import uj.wmii.jwzp.hardwarerental.repositories.CategoryRepository;
-import uj.wmii.jwzp.hardwarerental.services.CategoryService;
-import uj.wmii.jwzp.hardwarerental.services.CategoryServiceImpl;
+import uj.wmii.jwzp.hardwarerent.data.Category;
+import uj.wmii.jwzp.hardwarerent.data.Product;
+import uj.wmii.jwzp.hardwarerent.services.CategoryService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/categories")

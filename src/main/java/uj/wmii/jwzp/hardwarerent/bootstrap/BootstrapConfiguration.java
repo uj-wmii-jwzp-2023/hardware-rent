@@ -1,11 +1,11 @@
-package uj.wmii.jwzp.hardwarerental.bootstrap;
+package uj.wmii.jwzp.hardwarerent.bootstrap;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import uj.wmii.jwzp.hardwarerental.data.Category;
-import uj.wmii.jwzp.hardwarerental.data.Product;
-import uj.wmii.jwzp.hardwarerental.repositories.CategoryRepository;
-import uj.wmii.jwzp.hardwarerental.repositories.ProductRepository;
+import uj.wmii.jwzp.hardwarerent.data.Category;
+import uj.wmii.jwzp.hardwarerent.data.Product;
+import uj.wmii.jwzp.hardwarerent.repositories.CategoryRepository;
+import uj.wmii.jwzp.hardwarerent.repositories.ProductRepository;
 
 import java.math.BigDecimal;
 import java.util.HashSet;

@@ -1,11 +1,10 @@
-package uj.wmii.jwzp.hardwarerental.services;
+package uj.wmii.jwzp.hardwarerent.services;
 
 import org.springframework.data.domain.Example;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import uj.wmii.jwzp.hardwarerental.data.Product;
-import uj.wmii.jwzp.hardwarerental.repositories.ProductRepository;
+import uj.wmii.jwzp.hardwarerent.data.Product;
+import uj.wmii.jwzp.hardwarerent.repositories.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;

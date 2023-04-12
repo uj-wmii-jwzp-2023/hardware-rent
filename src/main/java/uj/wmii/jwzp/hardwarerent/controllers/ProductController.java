@@ -1,11 +1,11 @@
-package uj.wmii.jwzp.hardwarerental.controllers;
+package uj.wmii.jwzp.hardwarerent.controllers;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uj.wmii.jwzp.hardwarerental.data.Product;
-import uj.wmii.jwzp.hardwarerental.services.ProductService;
+import uj.wmii.jwzp.hardwarerent.data.Product;
+import uj.wmii.jwzp.hardwarerent.services.ProductService;
 
 import java.util.List;
 import java.util.Optional;

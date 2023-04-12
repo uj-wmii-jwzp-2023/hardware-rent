@@ -1,4 +1,4 @@
-package uj.wmii.jwzp.hardwarerental.data;
+package uj.wmii.jwzp.hardwarerent.data;
 
 public enum OrderStatus {
     ORDERED,

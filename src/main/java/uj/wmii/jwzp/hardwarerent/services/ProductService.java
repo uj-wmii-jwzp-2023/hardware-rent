@@ -1,8 +1,7 @@
-package uj.wmii.jwzp.hardwarerental.services;
+package uj.wmii.jwzp.hardwarerent.services;
 
 
-import uj.wmii.jwzp.hardwarerental.data.Category;
-import uj.wmii.jwzp.hardwarerental.data.Product;
+import uj.wmii.jwzp.hardwarerent.data.Product;
 
 import java.util.List;
 import java.util.Optional;

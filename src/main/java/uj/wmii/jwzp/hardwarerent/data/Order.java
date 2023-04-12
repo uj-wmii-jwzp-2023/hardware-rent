@@ -1,9 +1,8 @@
-package uj.wmii.jwzp.hardwarerental.data;
+package uj.wmii.jwzp.hardwarerent.data;
 
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 public class Order {

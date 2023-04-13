@@ -10,6 +10,7 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long order_id;
+
     @ManyToOne(optional=false)
     @JoinColumn(name="user_id")
     private MyUser user;
@@ -18,6 +19,11 @@ public class Orders {
     @OneToMany(mappedBy="orders")
     private Set<OrderDetails> orderDetails;
 
+    public Orders(MyUser user, Date orderDate, Date dueDate) {
+        this.user = user;
+        this.orderDate = orderDate;
+        this.dueDate = dueDate;
+    }
 
     public Long getOrder_id() {
         return order_id;

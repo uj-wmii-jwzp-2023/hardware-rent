@@ -54,13 +54,13 @@ class ProductControllerTest {
         productFirst.setProduct_id(1L);
         productFirst.setPrice(new BigDecimal("135.23"));
         productFirst.setCompanyName("Samsung");
-        productFirst.setAvailable(true);
+        productFirst.setAvailableQuantity(5);
         productFirst.setModel("Galaxy A32");
 
         productSecond.setProduct_id(2L);
         productSecond.setPrice(new BigDecimal("753.34"));
         productSecond.setCompanyName("Dell");
-        productSecond.setAvailable(false);
+        productSecond.setAvailableQuantity(5);
         productSecond.setModel("Latitude 5590");
 
         myProducts.add(productFirst);
@@ -98,7 +98,7 @@ class ProductControllerTest {
         Product newProduct = new Product();
         newProduct.setProduct_id(3L);
         newProduct.setModel("IPhone XIV");
-        newProduct.setAvailable(true);
+        newProduct.setAvailableQuantity(5);
         newProduct.setPrice(new BigDecimal("1400.34"));
         newProduct.setCompanyName("Apple");
 
@@ -155,22 +155,6 @@ class ProductControllerTest {
 
         assertEquals(1L, idArgumentCaptor.getValue());
         assertEquals(productArgumentCaptor.getValue().getCompanyName(), "Lenovo");
-        assertFalse(productArgumentCaptor.getValue().isAvailable());
     }
 
-    @Test
-    void testGetProductsByAvailability() throws Exception {
-
-        List<Product> trueAvailabilityProducts = new ArrayList<>();
-
-        trueAvailabilityProducts.add(myProducts.get(0));
-        given(productService.getProductsByAvailability(true)).willReturn(trueAvailabilityProducts);
-
-        mockMvc.perform(get("/products?availability=true")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].product_id", is(1)))
-                .andExpect(jsonPath("$[0].available", is(true)));
-    }
 }

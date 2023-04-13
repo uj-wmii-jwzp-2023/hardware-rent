@@ -7,34 +7,36 @@ public class OrderDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long orderDetails_id;
-    private Long product_id;
+    @OneToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    private Product product;
     private int quantity;
     private String description;
     @ManyToOne(optional=false)
     @JoinColumn(name="order_id")
     private Orders orders;
 
-    public OrderDetails(Long product_id, int quantity, String description, Orders order) {
-        this.product_id = product_id;
+    public OrderDetails(Product product, int quantity, String description, Orders order) {
+        this.product = product;
         this.quantity = quantity;
         this.description = description;
         this.orders = order;
     }
 
     public OrderDetails() {
-
     }
+
 
     public Long getOrderDetails_id() {
         return orderDetails_id;
     }
 
     public Long getProduct_id() {
-        return product_id;
+        return product.getProduct_id();
     }
 
-    public void setProduct_id(Long product_id) {
-        this.product_id = product_id;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public int getQuantity() {

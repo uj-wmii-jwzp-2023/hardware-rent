@@ -13,13 +13,11 @@ public class Category {
     private Long category_id;
     private String categoryName;
 
+    @OneToMany(mappedBy="category")
+    private Set<Product> products;
 
     public Long getCategory_id() {
         return category_id;
-    }
-
-    public void setCategory_id(Long id) {
-        this.category_id = id;
     }
 
     public String getCategoryName() {
@@ -29,8 +27,7 @@ public class Category {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
-    @OneToMany(mappedBy="category")
-    private Set<Product> products;
+
     public void setProducts(Set<Product> _products)
     {
         this.products = _products;

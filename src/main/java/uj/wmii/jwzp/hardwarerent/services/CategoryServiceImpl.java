@@ -25,4 +25,9 @@ public class CategoryServiceImpl implements CategoryService {
     public Optional<Category> getCategoryById(Long id) {
         return Optional.empty();
     }
+    @Override
+    public Category createNewCategory(Category category)
+    {
+        return categoryRepository.save(category);
+    }
 }

@@ -1,6 +1,4 @@
 package uj.wmii.jwzp.hardwarerent.services;
-
-
 import uj.wmii.jwzp.hardwarerent.data.Product;
 
 import java.util.List;

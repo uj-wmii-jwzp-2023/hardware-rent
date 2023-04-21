@@ -18,5 +18,4 @@ public interface ProductService {
 
     void updatePartOfProductById(Long id, Product product);
 
-    List<Product> getProductsByAvailability(Boolean available);
 }

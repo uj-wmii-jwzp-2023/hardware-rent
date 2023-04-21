@@ -19,6 +19,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().disable();
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
@@ -33,6 +34,7 @@ public class SecurityConfig {
                 .logoutUrl("/logout")
                 .and()
                 .httpBasic();
+
         return http.build();
     }
 

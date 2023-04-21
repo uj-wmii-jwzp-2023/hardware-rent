@@ -35,7 +35,8 @@ public class ProductServiceImpl implements ProductService {
         savedProduct.setCompanyName(product.getCompanyName());
         savedProduct.setPrice(product.getPrice());
         savedProduct.setModel(product.getModel());
-        savedProduct.setAvailable(product.isAvailable());
+        savedProduct.setAvailableQuantity(product.getAvailableQuantity());
+        savedProduct.setOverallQuantity(product.getOverallQuantity());
 
         return productRepository.save(savedProduct);
     }
@@ -44,7 +45,8 @@ public class ProductServiceImpl implements ProductService {
     public Product updateWholeProductById(Long id, Product product) {
         Product existing = productRepository.findById(id).orElseThrow();
 
-        existing.setAvailable(product.isAvailable());
+        existing.setAvailableQuantity(product.getAvailableQuantity());
+        existing.setOverallQuantity(product.getOverallQuantity());
         existing.setModel(product.getModel());
         existing.setPrice(product.getPrice());
         existing.setCompanyName(product.getCompanyName());
@@ -67,18 +69,15 @@ public class ProductServiceImpl implements ProductService {
         if (StringUtils.hasText(product.getModel())) {
             existing.setModel(product.getModel());
         }
-        if (product.isAvailable() != null) {
-            existing.setAvailable(product.isAvailable());
-        }
+
         if (product.getPrice() != null) {
             existing.setPrice(product.getPrice());
         }
 
+        existing.setAvailableQuantity(product.getAvailableQuantity());
+        existing.setOverallQuantity(product.getOverallQuantity());
+
         productRepository.save(existing);
     }
 
-    @Override
-    public List<Product> getProductsByAvailability(Boolean available) {
-        return productRepository.findByIsAvailableEquals(available);
-    }
 }

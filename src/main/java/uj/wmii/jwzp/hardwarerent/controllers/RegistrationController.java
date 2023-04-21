@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.RegistrationForm;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
 
@@ -23,9 +24,15 @@ public class RegistrationController {
 
     @PostMapping
     public ResponseEntity processRegistration(RegistrationForm form) {
-        var userAdded = userRepository.save(form.toUser(encoder));
-        if (userAdded == null)
-            return ResponseEntity.status(404).body("Error while adding new user");
-        return ResponseEntity.ok().body(userAdded);
+        var userRegistered =  registerUser(form.toUser(encoder));
+        if (userRegistered == null)
+            return ResponseEntity.status(404).body("Error while registering new user");
+        return ResponseEntity.ok().body(userRegistered);
+
+    }
+    public MyUser registerUser(MyUser user)
+    {
+        user.setPassword(encoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 }

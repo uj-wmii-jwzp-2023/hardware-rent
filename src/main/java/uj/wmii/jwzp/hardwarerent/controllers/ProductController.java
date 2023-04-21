@@ -66,8 +66,5 @@ public class ProductController {
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(params = "availability")
-    public List<Product> getProductsByAvailability(@RequestParam Boolean availability) {
-        return productService.getProductsByAvailability(availability);
-    }
+
 }

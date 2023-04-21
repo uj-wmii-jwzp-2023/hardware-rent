@@ -13,16 +13,50 @@ public class Product {
     private String companyName;
     private String model;
     private BigDecimal price;
-    private Boolean isAvailable;
+    private int availableQuantity;
+    private int overallQuantity;
+
     @ManyToOne
     @JoinColumn(name="category_id")
     private Category category;
+    public Product() {}
+    public Product(String companyName,
+                   String model,
+                   Category category,
+                   int price,
+                   int quantity) {
+        this.companyName = companyName;
+        this.model = model;
+        this.price = new BigDecimal(price);
+        this.category = category;
+        this.availableQuantity = quantity;
+        this.overallQuantity = quantity;
+    }
+
+
+
     public Long getProduct_id() {
         return product_id;
     }
 
     public void setProduct_id(Long id) {
         this.product_id = id;
+    }
+
+    public int getAvailableQuantity() {
+        return availableQuantity;
+    }
+
+    public void setAvailableQuantity(int availableQuantity) {
+        this.availableQuantity = availableQuantity;
+    }
+
+    public int getOverallQuantity() {
+        return overallQuantity;
+    }
+
+    public void setOverallQuantity(int overallQuantity) {
+        this.overallQuantity = overallQuantity;
     }
 
     public String getCompanyName() {
@@ -47,14 +81,6 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public Boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
     }
 
     public void setCategory(Category _category)
@@ -84,7 +110,8 @@ public class Product {
                 ", companyName='" + companyName + '\'' +
                 ", model='" + model + '\'' +
                 ", price=" + price +
-                ", isAvailable=" + isAvailable +
+                ", available=" + availableQuantity +
+                ", overall=" + overallQuantity +
                 '}';
     }
 

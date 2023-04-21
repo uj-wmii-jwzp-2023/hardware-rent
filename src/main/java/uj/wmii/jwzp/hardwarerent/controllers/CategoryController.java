@@ -20,16 +20,23 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity getAllCategories() {
+        //return categoryService.getAllCategories();
+        var categoriesReturned = categoryService.getAllCategories();
+        if (categoriesReturned == null)
+            return ResponseEntity.status(404).body("Error while getting all categories");
+        else
+            return ResponseEntity.ok().body(categoriesReturned);
     }
 
     @PostMapping
     public ResponseEntity<String> createNewProduct(@RequestBody Category category) {
 
         Category savedCategory = categoryService.createNewCategory(category);
-
-        return ResponseEntity.created(URI.create("/categories/" + savedCategory.getCategory_id()))
+        if (savedCategory == null)
+            return ResponseEntity.status(404).body("Error while creating new categorie");
+        else
+            return ResponseEntity.created(URI.create("/categories/" + savedCategory.getCategory_id()))
                 .body("Product has been successfully created!");
     }
 

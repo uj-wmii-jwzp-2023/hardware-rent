@@ -1,5 +1,6 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,17 +20,30 @@ public class OrdersController {
         this.orderService = orderService;
     }
     @GetMapping
-    public List<Orders> getAllOrders() {
-        return orderService.getAllOrders();
+    public ResponseEntity getAllOrders() {
+        var ordersReturned = orderService.getAllOrders();;
+        if (ordersReturned == null)
+            return ResponseEntity.status(404).body("Error while getting all orders");
+        else
+            return ResponseEntity.ok().body(ordersReturned);
     }
     @PostMapping
-    public Orders addNewOrder(Orders order)
+    public ResponseEntity addNewOrder(Orders order)
     {
-        return orderService.addNewOrder(order);
+        var orderAdded = orderService.addNewOrder(order);
+        if (orderAdded == null)
+            return ResponseEntity.status(404).body("Error while adding new order");
+        else
+            return ResponseEntity.ok().body(orderAdded);
     }
     @GetMapping("{id}")
-    public Optional<Orders> getOrderById(Long id)
+    public ResponseEntity getOrderById(Long id)
     {
-        return orderService.getOrderById(id);
+        var orderReturned = orderService.getOrderById(id);
+        if (orderReturned.isEmpty())
+            return ResponseEntity.status(404).body("Order with id: " + id + " does not exist!");
+        else
+            return ResponseEntity.ok().body(orderReturned);
+
     }
 }

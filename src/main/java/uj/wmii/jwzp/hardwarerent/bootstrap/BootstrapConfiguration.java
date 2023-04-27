@@ -37,7 +37,7 @@ public class BootstrapConfiguration implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        /*Category category_Tv = new Category();
+        Category category_Tv = new Category();
         category_Tv.setCategoryName("TV");
         category_Tv = categoryRepository.save(category_Tv);
 
@@ -84,7 +84,7 @@ public class BootstrapConfiguration implements CommandLineRunner {
         orderDetailsRepository.save(orderDetails);
         orderDetails = new OrderDetails(pr2,1,"no description",order);
         orderDetailsRepository.save(orderDetails);
-        */
+
 
     }
 }

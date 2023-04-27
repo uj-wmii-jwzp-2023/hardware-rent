@@ -15,10 +15,15 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	runtimeOnly("com.h2database:h2")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.security:spring-security-test:6.0.2")
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	runtimeOnly("org.postgresql:postgresql:42.5.4")
 }
 
 tasks.withType<Test> {

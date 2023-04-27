@@ -10,15 +10,21 @@ import java.util.Collection;
 import java.util.Set;
 
 @Entity
+@Table(name = "users", schema = "myschema")
 public class MyUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long user_id;
+    @Column(nullable = false, length = 100)
     private String username;
+    @Column(nullable = false, length = 100)
     private String password;
+    @Column(nullable = false, length = 100)
     private String firstName;
+    @Column(nullable = false, length = 100)
     private String lastName;
+    @Column(name = "email_address",nullable = false, length = 100)
     private String email;
     @OneToMany(mappedBy="user")
     private Set<Orders> orders;

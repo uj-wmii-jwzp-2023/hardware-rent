@@ -6,11 +6,13 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "categories", schema = "myschema")
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long category_id;
+    @Column(nullable = false, length = 100)
     private String categoryName;
 
     @OneToMany(mappedBy="category")

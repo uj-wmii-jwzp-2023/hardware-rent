@@ -5,15 +5,21 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "products", schema = "myschema")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long product_id;
+    @Column(nullable = false, length = 100)
     private String companyName;
+    @Column(nullable = false, length = 100)
     private String model;
+    @Column(nullable = false)
     private BigDecimal price;
+    @Column(nullable = false)
     private int availableQuantity;
+    @Column(nullable = false)
     private int overallQuantity;
 
     @ManyToOne

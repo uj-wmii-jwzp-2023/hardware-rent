@@ -3,6 +3,7 @@ package uj.wmii.jwzp.hardwarerent.data;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "order_details", schema = "myschema")
 public class OrderDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -10,7 +11,9 @@ public class OrderDetails {
     @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     private Product product;
+    @Column(nullable = false, length = 100)
     private int quantity;
+    @Column(nullable = false, length = 100)
     private String description;
     @ManyToOne(optional=false)
     @JoinColumn(name="order_id")

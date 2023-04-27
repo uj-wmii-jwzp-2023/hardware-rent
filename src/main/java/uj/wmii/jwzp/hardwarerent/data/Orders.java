@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
+@Table(name = "orders", schema = "myschema")
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,7 +15,9 @@ public class Orders {
     @ManyToOne(optional=false)
     @JoinColumn(name="user_id")
     private MyUser user;
+    @Column(name = "order_date",nullable = false)
     private Date orderDate;
+    @Column(name = "due_date",nullable = false)
     private Date dueDate;
     @OneToMany(mappedBy="orders")
     private Set<OrderDetails> orderDetails;
@@ -23,6 +26,10 @@ public class Orders {
         this.user = user;
         this.orderDate = orderDate;
         this.dueDate = dueDate;
+    }
+
+    public Orders() {
+
     }
 
     public Long getOrder_id() {

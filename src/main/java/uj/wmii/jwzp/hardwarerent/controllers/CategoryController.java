@@ -3,11 +3,9 @@ package uj.wmii.jwzp.hardwarerent.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Category;
-import uj.wmii.jwzp.hardwarerent.data.Product;
-import uj.wmii.jwzp.hardwarerent.services.CategoryService;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/categories")

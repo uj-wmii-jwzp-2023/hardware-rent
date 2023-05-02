@@ -1,4 +1,4 @@
-package uj.wmii.jwzp.hardwarerent.services;
+package uj.wmii.jwzp.hardwarerent.services.interfaces;
 import uj.wmii.jwzp.hardwarerent.data.*;
 
 import java.util.List;

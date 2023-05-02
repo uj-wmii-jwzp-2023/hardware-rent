@@ -12,7 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import uj.wmii.jwzp.hardwarerent.data.Product;
-import uj.wmii.jwzp.hardwarerent.services.ProductService;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -51,13 +51,13 @@ class ProductControllerTest {
 
     @BeforeEach
     public void setUp() {
-        productFirst.setProduct_id(1L);
+        productFirst.setId(1L);
         productFirst.setPrice(new BigDecimal("135.23"));
         productFirst.setCompanyName("Samsung");
         productFirst.setAvailableQuantity(5);
         productFirst.setModel("Galaxy A32");
 
-        productSecond.setProduct_id(2L);
+        productSecond.setId(2L);
         productSecond.setPrice(new BigDecimal("753.34"));
         productSecond.setCompanyName("Dell");
         productSecond.setAvailableQuantity(5);
@@ -96,7 +96,7 @@ class ProductControllerTest {
     @Test
     void testCreateNewProduct() throws Exception {
         Product newProduct = new Product();
-        newProduct.setProduct_id(3L);
+        newProduct.setId(3L);
         newProduct.setModel("IPhone XIV");
         newProduct.setAvailableQuantity(5);
         newProduct.setPrice(new BigDecimal("1400.34"));

@@ -1,7 +1,7 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
-import uj.wmii.jwzp.hardwarerent.services.OrderDetailsService;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderDetailsService;
 
 @RestController
 public class OrderDetailsController {

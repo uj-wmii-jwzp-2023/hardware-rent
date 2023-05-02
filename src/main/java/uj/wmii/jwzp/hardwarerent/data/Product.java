@@ -1,31 +1,41 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products", schema = "myschema")
+@NoArgsConstructor
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long product_id;
+    @Getter @Setter
+    private Long id;
     @Column(nullable = false, length = 100)
+    @Getter @Setter
     private String companyName;
     @Column(nullable = false, length = 100)
+    @Getter @Setter
     private String model;
     @Column(nullable = false)
+    @Getter @Setter
     private BigDecimal price;
     @Column(nullable = false)
+    @Getter @Setter
     private int availableQuantity;
     @Column(nullable = false)
+    @Getter @Setter
     private int overallQuantity;
 
     @ManyToOne
     @JoinColumn(name="category_id")
+    @Getter @Setter
     private Category category;
-    public Product() {}
     public Product(String companyName,
                    String model,
                    Category category,
@@ -38,62 +48,6 @@ public class Product {
         this.availableQuantity = quantity;
         this.overallQuantity = quantity;
     }
-
-
-
-    public Long getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(Long id) {
-        this.product_id = id;
-    }
-
-    public int getAvailableQuantity() {
-        return availableQuantity;
-    }
-
-    public void setAvailableQuantity(int availableQuantity) {
-        this.availableQuantity = availableQuantity;
-    }
-
-    public int getOverallQuantity() {
-        return overallQuantity;
-    }
-
-    public void setOverallQuantity(int overallQuantity) {
-        this.overallQuantity = overallQuantity;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setCategory(Category _category)
-    {
-        this.category = _category;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -101,18 +55,18 @@ public class Product {
 
         Product product = (Product) o;
 
-        return product_id.equals(product.product_id);
+        return id.equals(product.id);
     }
 
     @Override
     public int hashCode() {
-        return product_id.hashCode();
+        return id.hashCode();
     }
 
     @Override
     public String toString() {
         return "Product{" +
-                "id=" + product_id +
+                "id=" + id +
                 ", companyName='" + companyName + '\'' +
                 ", model='" + model + '\'' +
                 ", price=" + price +

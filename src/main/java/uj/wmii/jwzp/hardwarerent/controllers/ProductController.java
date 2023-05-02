@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Product;
-import uj.wmii.jwzp.hardwarerent.services.ProductService;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
+@CrossOrigin
+
 @RequestMapping("/products")
 public class ProductController {
 
@@ -38,7 +40,7 @@ public class ProductController {
 
         Product savedProduct = productService.createNewProduct(product);
 
-        return ResponseEntity.created(URI.create("/products/" + savedProduct.getProduct_id()))
+        return ResponseEntity.created(URI.create("/products/" + savedProduct.getId()))
                 .body("Product has been successfully created!");
     }
 

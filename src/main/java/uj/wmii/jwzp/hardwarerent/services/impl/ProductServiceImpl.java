@@ -1,9 +1,10 @@
-package uj.wmii.jwzp.hardwarerent.services;
+package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uj.wmii.jwzp.hardwarerent.data.Product;
 import uj.wmii.jwzp.hardwarerent.repositories.ProductRepository;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
 import java.util.List;
 import java.util.Optional;

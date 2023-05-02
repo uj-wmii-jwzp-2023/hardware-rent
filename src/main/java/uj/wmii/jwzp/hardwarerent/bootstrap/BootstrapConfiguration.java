@@ -68,7 +68,7 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 10);
         pr2 = productRepository.save(pr2);
 
-        MyUser user = new MyUser("admin","admin","test","test","test");
+        /*MyUser user = new MyUser("admin","admin","test","test","test");
         registrationController.registerUser(user);
         //----
         Orders order = new Orders(user,new Date(),new Date());
@@ -84,7 +84,7 @@ public class BootstrapConfiguration implements CommandLineRunner {
         orderDetailsRepository.save(orderDetails);
         orderDetails = new OrderDetails(pr2,1,"no description",order);
         orderDetailsRepository.save(orderDetails);
-
+*/
 
     }
 }

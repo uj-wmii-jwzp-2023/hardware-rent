@@ -1,8 +1,9 @@
-package uj.wmii.jwzp.hardwarerent.services;
+package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.stereotype.Service;
 import uj.wmii.jwzp.hardwarerent.data.Category;
 import uj.wmii.jwzp.hardwarerent.repositories.CategoryRepository;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
 
 import java.util.List;
 import java.util.Optional;

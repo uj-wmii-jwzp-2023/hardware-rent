@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uj.wmii.jwzp.hardwarerent.data.Orders;
-import uj.wmii.jwzp.hardwarerent.services.OrderService;
-
-import java.util.List;
-import java.util.Optional;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderService;
 
 @RestController
 @RequestMapping("/orders")

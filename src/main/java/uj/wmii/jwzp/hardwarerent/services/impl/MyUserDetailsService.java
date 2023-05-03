@@ -20,9 +20,7 @@ import java.util.*;
 @Service
 @Transactional
 public class MyUserDetailsService implements UserDetailsService {
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private RoleRepository roleRepository;
 
     @Override
@@ -33,7 +31,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         return new MyUserPrincipal(user);
     }
-    private Collection<? extends GrantedAuthority> getAuthorities(
+    public Collection<? extends GrantedAuthority> getAuthorities(
             Collection<Role> roles) {
 
         return getGrantedAuthorities(getPrivileges(roles));

@@ -31,9 +31,12 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
+
                 .requestMatchers("/register").permitAll()
                 .requestMatchers(HttpMethod.GET, "/products", "/products/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest()
+                .authenticated()
+
                 .and().formLogin()
                 .defaultSuccessUrl("/products")
                 .and().logout()

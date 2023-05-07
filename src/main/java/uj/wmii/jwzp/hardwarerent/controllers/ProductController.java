@@ -9,10 +9,8 @@ import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
 import java.net.URI;
 import java.util.List;
-
-@RestController
 @CrossOrigin
-
+@RestController
 @RequestMapping("/products")
 public class ProductController {
 

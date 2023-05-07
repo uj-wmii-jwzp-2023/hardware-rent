@@ -11,7 +11,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "users", schema = "myschema")
-public class MyUser {
+public class MyUser implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,6 +53,8 @@ public class MyUser {
         this.firstName = user.firstName;
         this.lastName = user.lastName;
         this.email = user.email;
+        this.enabled = user.enabled;
+        this.tokenExpired = user.tokenExpired;
     }
 
     public MyUser(String username,
@@ -65,5 +67,25 @@ public class MyUser {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 }

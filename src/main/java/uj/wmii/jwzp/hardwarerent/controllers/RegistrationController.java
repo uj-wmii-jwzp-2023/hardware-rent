@@ -2,6 +2,7 @@ package uj.wmii.jwzp.hardwarerent.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +11,7 @@ import uj.wmii.jwzp.hardwarerent.data.RegistrationForm;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
 
 import java.io.Serializable;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/register")
 public class RegistrationController {

@@ -1,6 +1,5 @@
 package uj.wmii.jwzp.hardwarerent.services.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +7,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
-import uj.wmii.jwzp.hardwarerent.data.MyUserPrincipal;
 import uj.wmii.jwzp.hardwarerent.data.Privilege;
 import uj.wmii.jwzp.hardwarerent.data.Role;
 import uj.wmii.jwzp.hardwarerent.repositories.RoleRepository;
@@ -23,13 +21,18 @@ public class MyUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
 
+    public MyUserDetailsService(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) {
         MyUser user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new MyUserPrincipal(user);
+        return new MyUser(user);
     }
     public Collection<? extends GrantedAuthority> getAuthorities(
             Collection<Role> roles) {

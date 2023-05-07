@@ -6,7 +6,7 @@ import uj.wmii.jwzp.hardwarerent.data.Category;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
 
 import java.net.URI;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {

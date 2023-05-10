@@ -24,12 +24,12 @@ public class OrderDetails {
     @ManyToOne(optional=false)
     @JoinColumn(name="id")
     @Getter @Setter
-    private Orders orders;
+    private Order order;
 
-    public OrderDetails(Product product, int quantity, String description, Orders order) {
+    public OrderDetails(Product product, int quantity, String description, Order order) {
         this.product = product;
         this.quantity = quantity;
         this.description = description;
-        this.orders = order;
+        this.order = order;
     }
 }

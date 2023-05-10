@@ -54,7 +54,7 @@ public class RegistrationController {
         }catch (Exception e)
         {
             LOG.error("Internal error: " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // return error response
+            return ResponseEntity.internalServerError().body("internal server error"); // return error response
         }
         LOG.info("Attempt to register new user. Successfully");
         return ResponseEntity.ok().body("user registered successfully");

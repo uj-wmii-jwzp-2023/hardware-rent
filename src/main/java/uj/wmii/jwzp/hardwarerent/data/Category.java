@@ -2,6 +2,8 @@ package uj.wmii.jwzp.hardwarerent.data;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -11,29 +13,16 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long category_id;
+    @Getter @Setter
+    private Long id;
     @Column(nullable = false, length = 100)
+    @Getter @Setter
     private String categoryName;
 
     @OneToMany(mappedBy="category")
+    @Getter @Setter
     private Set<Product> products;
 
-    public Long getCategory_id() {
-        return category_id;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public void setProducts(Set<Product> _products)
-    {
-        this.products = _products;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -42,18 +31,18 @@ public class Category {
 
         Category category = (Category) o;
 
-        return category_id.equals(category.category_id);
+        return id.equals(category.id);
     }
 
     @Override
     public int hashCode() {
-        return category_id.hashCode();
+        return id.hashCode();
     }
 
     @Override
     public String toString() {
         return "Category{" +
-                "id=" + category_id +
+                "id=" + id +
                 ", categoryName='" + categoryName + '\'' +
                 '}';
     }

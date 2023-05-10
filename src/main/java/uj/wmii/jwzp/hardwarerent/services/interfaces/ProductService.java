@@ -13,9 +13,10 @@ public interface ProductService {
     Product createNewProduct(Product product);
 
     Product updateWholeProductById(Long id, Product product);
+    Optional<Product> getProductByModel(String model);
 
     void deleteProductById(Long id);
 
-    void updatePartOfProductById(Long id, Product product);
+    Product updatePartOfProductById(Long id, Product product);
 
 }

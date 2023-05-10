@@ -9,9 +9,10 @@ import lombok.*;
 @Entity
 @Table(name = "orders", schema = "myschema")
 @NoArgsConstructor
-public class Orders {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter @Setter
     private Long id;
 
     @ManyToOne(optional=false)
@@ -28,7 +29,7 @@ public class Orders {
     @Getter @Setter
     private Set<OrderDetails> orderDetails;
 
-    public Orders(MyUser user, Date orderDate, Date dueDate) {
+    public Order(MyUser user, Date orderDate, Date dueDate) {
         this.user = user;
         this.orderDate = orderDate;
         this.dueDate = dueDate;

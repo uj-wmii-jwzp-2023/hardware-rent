@@ -1,7 +1,7 @@
 package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.stereotype.Service;
-import uj.wmii.jwzp.hardwarerent.data.Orders;
+import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.repositories.OrdersRepository;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderService;
 
@@ -18,21 +18,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Orders addNewOrder(Orders order) {
+    public Order createNewOrder(Order order) {
         return ordersRepository.save(order);
     }
 
     @Override
-    public Orders changeOrderInfo(Orders orders) {
+    public Order changeOrderInfo(Order order) {
         return null;
     }
 
     @Override
-    public List<Orders> getAllOrders() {
+    public List<Order> getAllOrders() {
         return ordersRepository.findAll();
     }
     @Override
-    public Optional<Orders> getOrderById(Long id) {
+    public Optional<Order> getOrderById(Long id) {
         return ordersRepository.findById(id);
     }
 }

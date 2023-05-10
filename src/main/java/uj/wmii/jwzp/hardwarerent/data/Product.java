@@ -27,10 +27,10 @@ public class Product {
     private BigDecimal price;
     @Column(nullable = false)
     @Getter @Setter
-    private int availableQuantity;
+    private Integer availableQuantity;
     @Column(nullable = false)
     @Getter @Setter
-    private int overallQuantity;
+    private Integer overallQuantity;
 
     @ManyToOne
     @JoinColumn(name="category_id")

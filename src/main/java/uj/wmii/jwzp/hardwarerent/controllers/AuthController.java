@@ -3,6 +3,7 @@ package uj.wmii.jwzp.hardwarerent.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,13 +27,31 @@ public class AuthController {
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public ResponseEntity  token(Authentication authentication) {
-        LOG.info("Token requested for user: '{}'", authentication.getName());
-        String token = tokenService.generateToken(authentication);
-        LOG.info("Token granted: {}", token);
+        String token;
         Map<String, Object > responseData = new HashMap<>();
+
+        try
+        {
+            LOG.info("Token requested for user: '{}'", authentication.getName());
+            token = tokenService.generateToken(authentication);
+            if(token == null) {
+                LOG.error("cant get token for user: '{}'",authentication.getName());
+                return ResponseEntity.internalServerError().body("internal server error"); // return error response
+            }else {
+
+                LOG.info("Token granted: {}", token);
+            }
+        }catch (Exception e)
+        {
+            LOG.error("Internal error: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // return error response
+        }
+
+
         responseData.put("username", authentication.getName());
         responseData.put("authorities", authentication.getAuthorities());
         responseData.put("accessToken", token);
         return ResponseEntity.ok().body(responseData);
+
     }
 }

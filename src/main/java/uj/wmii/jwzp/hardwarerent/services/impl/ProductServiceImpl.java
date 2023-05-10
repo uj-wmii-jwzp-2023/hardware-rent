@@ -56,12 +56,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Optional<Product> getProductByModel(String model) {
+        return productRepository.getProductsByModel(model);
+    }
+
+    @Override
     public void deleteProductById(Long id) {
         productRepository.deleteById(id);
     }
 
     @Override
-    public void updatePartOfProductById(Long id, Product product) {
+    public Product updatePartOfProductById(Long id, Product product) {
         Product existing = productRepository.findById(id).orElseThrow();
 
         if (StringUtils.hasText(product.getCompanyName())) {
@@ -70,15 +75,16 @@ public class ProductServiceImpl implements ProductService {
         if (StringUtils.hasText(product.getModel())) {
             existing.setModel(product.getModel());
         }
-
         if (product.getPrice() != null) {
             existing.setPrice(product.getPrice());
         }
-
-        existing.setAvailableQuantity(product.getAvailableQuantity());
-        existing.setOverallQuantity(product.getOverallQuantity());
-
-        productRepository.save(existing);
+        if (product.getOverallQuantity() != null) {
+            existing.setOverallQuantity(product.getOverallQuantity());
+        }
+        if (product.getAvailableQuantity() != null) {
+            existing.setAvailableQuantity(product.getAvailableQuantity());
+        }
+        return productRepository.save(existing);
     }
 
 }

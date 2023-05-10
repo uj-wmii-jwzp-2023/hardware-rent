@@ -1,69 +1,150 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uj.wmii.jwzp.hardwarerent.data.Category;
 import uj.wmii.jwzp.hardwarerent.data.Product;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
 import java.net.URI;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/products")
 public class ProductController {
 
     private final ProductService productService;
+    private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
+
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public ResponseEntity getAllProducts() {
+        List<Product> productsReturned;
+        try {
+            productsReturned = productService.getAllProducts();
+
+        }catch (Exception e)
+        {
+            LOG.error("Internal error: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("internal server error"); // return error response
+        }
+        LOG.info("Proceeded request to get all products");
+        return ResponseEntity.ok().body(productsReturned);
+
     }
 
     @GetMapping("{id}")
     public ResponseEntity getProductById(@PathVariable(name = "id") Long id) {
-        var productReturned = productService.getProductById(id);
-        if (productReturned.isEmpty())
-            return ResponseEntity.status(404).body("Product with id: " + id + " does not exist!");
+
+        Optional productReturned;
+        try{
+            productReturned = productService.getProductById(id);
+            if(productReturned.isEmpty()) {
+                LOG.info("Failed to find product with id: '{}'",id);
+                return ResponseEntity.status(404).body("Failed to find product with id: "+id);
+            }
+        }catch (Exception e)
+        {
+            LOG.error("Internal error: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("internal server error");
+        }
+        LOG.info("Proceeded request to get category with id: '{}'",id);
         return ResponseEntity.ok().body(productReturned);
     }
 
     @PostMapping
-    public ResponseEntity<String> createNewProduct(@RequestBody Product product) {
+    public ResponseEntity createNewProduct(@RequestBody Product product) {
 
-        Product savedProduct = productService.createNewProduct(product);
-
+        Product savedProduct;
+        try {
+            if(productService.getProductByModel(product.getModel()).isPresent()){
+                LOG.info("Received request to add product with already existing model");
+                return ResponseEntity.badRequest().body("product with such name already existed");
+            }
+            savedProduct = productService.createNewProduct(product);
+            if (savedProduct == null){
+                LOG.error("internal server error while creating new product");
+                return ResponseEntity.internalServerError().body("Error while creating new product");
+            }
+        }catch (Exception e)
+        {
+            LOG.error("Internal error: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("internal server error"); // return error response
+        }
+        LOG.info("Proceeded request to create new product");
         return ResponseEntity.created(URI.create("/products/" + savedProduct.getId()))
                 .body("Product has been successfully created!");
+
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<String> updateWholeProductById(@PathVariable("id") Long id, @RequestBody Product product) {
-        productService.updateWholeProductById(id, product);
-
-        return ResponseEntity.noContent().header("Location", "/products/" + id).build();
+    public ResponseEntity updateWholeProductById(@PathVariable("id") Long id, @RequestBody Product product) {
+        Product updatedProduct;
+        try {
+            updatedProduct = productService.updateWholeProductById(id, product);
+        }catch (Exception e)
+        {
+            if(e instanceof NoSuchElementException) {
+                LOG.info("Failed to find product with id: '{}'",id);
+                return ResponseEntity.status(404).body("Failed to find product with id: "+id);
+            }
+            LOG.error("Internal error: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("internal server error"); // return error response
+        }
+        LOG.info("Proceeded request to update product with id: "+id);
+        return ResponseEntity.created(URI.create("/products/" + updatedProduct.getId()))
+                .body("Product has been successfully changed!");
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteProductById(@PathVariable("id") Long id) {
-        productService.deleteProductById(id);
+    public ResponseEntity deleteProductById(@PathVariable("id") Long id) {
 
-        return ResponseEntity.status(204).build();
+        Optional targetProduct;
+        try {
+            targetProduct = productService.getProductById(id);
+            if(targetProduct.isEmpty()) {
+                LOG.info("Failed to find product with id: '{}'",id);
+                return ResponseEntity.status(404).body("Failed to find product with id: "+id);
+            }else {
+                productService.deleteProductById(id);
+            }
+        }catch (Exception e)
+        {
+            LOG.error("Internal error: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("internal server error"); // return error response
+        }
+        LOG.info("Proceeded request to delete product with id: '{}'",id);
+        return ResponseEntity.ok().body("deleted products with id: "+id);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<String> updatePartOfProductById(@PathVariable("id") Long id, @RequestBody Product product) {
-        productService.updatePartOfProductById(id, product);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/products/" + id.toString());
-
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+    public ResponseEntity updatePartOfProductById(@PathVariable("id") Long id, @RequestBody Product product) {
+        Product updatedProduct;
+        try {
+            updatedProduct = productService.updatePartOfProductById(id, product);
+        }catch (Exception e)
+        {
+            if(e instanceof NoSuchElementException) {
+                LOG.info("Failed to find product with id: '{}'",id);
+                return ResponseEntity.status(404).body("Failed to find product with id: "+id);
+            }
+            LOG.error("Internal error: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("internal server error"); // return error response
+        }
+        LOG.info("Proceeded request to update product with id: "+id);
+        return ResponseEntity.created(URI.create("/products/" + updatedProduct.getId()))
+                .body("Product has been successfully changed!");
     }
 
 

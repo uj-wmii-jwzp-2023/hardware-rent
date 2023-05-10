@@ -24,8 +24,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<Category> getCategoryById(Long id) {
-        return Optional.empty();
+        return categoryRepository.findById(id);
     }
+
+    @Override
+    public Optional<Category> getCategoryByName(String name) {
+        return categoryRepository.findCategoryByCategoryName(name);
+    }
+
     @Override
     public Category createNewCategory(Category category)
     {

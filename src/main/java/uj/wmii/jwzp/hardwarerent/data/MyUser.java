@@ -35,7 +35,7 @@ public class MyUser implements UserDetails{
     private boolean enabled;
     private boolean tokenExpired;
     @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
-    private Set<Orders> orders;
+    private Set<Order> orders;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",

@@ -12,6 +12,8 @@ import uj.wmii.jwzp.hardwarerent.data.RegistrationForm;
 import uj.wmii.jwzp.hardwarerent.data.Role;
 import uj.wmii.jwzp.hardwarerent.repositories.RoleRepository;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,18 +26,22 @@ public class RegistrationController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     public RegistrationController(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = encoder;
     }
+    private static final Logger LOG = LoggerFactory.getLogger(RegistrationController.class);
 
     @PostMapping
     public ResponseEntity<?> processRegistration(RegistrationForm form) {
         try
         {
-            if(userRepository.findByUsername(form.getUsername()) != null)
-            {return ResponseEntity.status(404).body("User with this username is already existed");}
+            if(userRepository.findByUsername(form.getUsername()) != null) {
+                LOG.info("Attempt to register new user. Error: "+form.getUsername()+" is already existed");
+                return ResponseEntity.status(404).body("User with this username is already existed");
+            }
 
             var userRole =  roleRepository.findByName("ROLE_USER");
             MyUser createdUser = form.toUserWithoutRoles();
@@ -47,9 +53,10 @@ public class RegistrationController {
 
         }catch (Exception e)
         {
+            LOG.error("Internal error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // return error response
         }
-
+        LOG.info("Attempt to register new user. Successfully");
         return ResponseEntity.ok().body("user registered successfully");
 
     }

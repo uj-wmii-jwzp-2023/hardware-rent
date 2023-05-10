@@ -27,10 +27,12 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import uj.wmii.jwzp.hardwarerent.services.impl.MyUserDetailsService;
 
 import java.io.IOException;
 
@@ -54,11 +56,12 @@ public class SecurityConfig {
         http.headers().frameOptions().disable();
         http.
                 cors().and().csrf().disable()
-                .authorizeHttpRequests().anyRequest().authenticated()
-                .and().formLogin()
-                .defaultSuccessUrl("/products").and()
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                //.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //w
+                .authorizeHttpRequests().requestMatchers("/register").permitAll().
+                anyRequest().authenticated()
+                //.and().formLogin()
+                //.defaultSuccessUrl("/products").and()
+                .and().oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //w
                 .httpBasic(withDefaults());
 
         return http.build();
@@ -71,9 +74,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository) {
+    public UserDetailsService userDetailsService(MyUserDetailsService userService) {
         return username -> {
-            MyUser user = userRepository.findByUsername(username);
+            MyUser user = userService.loadUserByUsername(username);
             if (user != null) return new MyUser(user);
             throw new UsernameNotFoundException("User '" + username + "' not found");
         };

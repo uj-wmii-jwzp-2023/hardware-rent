@@ -56,9 +56,10 @@ public class RegistrationForm {
                 '}';
     }
 
-    public MyUser toUser(PasswordEncoder passwordEncoder) {
-        return new MyUser(username,
-                passwordEncoder.encode(password),
+    public MyUser toUserWithoutRoles() {
+        return new MyUser(
+                username,
+                password,
                 firstName,
                 lastName,
                 email);

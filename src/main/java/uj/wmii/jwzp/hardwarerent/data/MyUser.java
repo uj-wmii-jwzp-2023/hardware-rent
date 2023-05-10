@@ -34,19 +34,21 @@ public class MyUser implements UserDetails{
     @Getter @Setter
     private boolean enabled;
     private boolean tokenExpired;
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
     private Set<Orders> orders;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
-    @Getter @Setter private Collection<Role> roles;
+    @Getter @Setter
+    private Collection<Role> roles;
     public MyUser() {
 
     }
+
     public MyUser(MyUser user) {
         this.username = user.username;
         this.password = user.password;
@@ -55,6 +57,7 @@ public class MyUser implements UserDetails{
         this.email = user.email;
         this.enabled = user.enabled;
         this.tokenExpired = user.tokenExpired;
+        this.roles = user.roles;
     }
 
     public MyUser(String username,
@@ -67,11 +70,13 @@ public class MyUser implements UserDetails{
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.enabled = true;
+        this.tokenExpired = false;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return getGrantedAuthorities(getPrivileges(roles));
     }
 
     @Override
@@ -87,5 +92,26 @@ public class MyUser implements UserDetails{
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
+    }
+    private List<String> getPrivileges(Collection<Role> roles) {
+
+        List<String> privileges = new ArrayList<>();
+        List<Privilege> collection = new ArrayList<>();
+        for (Role role : roles) {
+            privileges.add(role.getName());
+            collection.addAll(role.getPrivileges());
+        }
+        for (Privilege item : collection) {
+            privileges.add(item.getName());
+        }
+        return privileges;
+    }
+
+    private List<GrantedAuthority> getGrantedAuthorities(List<String> privileges) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (String privilege : privileges) {
+            authorities.add(new SimpleGrantedAuthority(privilege));
+        }
+        return authorities;
     }
 }

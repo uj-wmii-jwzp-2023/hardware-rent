@@ -27,12 +27,12 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
+    public MyUser loadUserByUsername(String username) {
         MyUser user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new MyUser(user);
+        return user;
     }
     public Collection<? extends GrantedAuthority> getAuthorities(
             Collection<Role> roles) {

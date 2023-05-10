@@ -25,7 +25,7 @@ public class Order {
     @Column(name = "due_date",nullable = false)
     @Getter @Setter
     private Date dueDate;
-    @OneToMany(mappedBy="orders")
+    @OneToMany(mappedBy="order")
     @Getter @Setter
     private Set<OrderDetails> orderDetails;
 

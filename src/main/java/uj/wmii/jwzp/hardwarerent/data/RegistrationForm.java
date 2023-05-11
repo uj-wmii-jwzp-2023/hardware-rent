@@ -2,7 +2,6 @@ package uj.wmii.jwzp.hardwarerent.data;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class RegistrationForm {
     @Getter @Setter

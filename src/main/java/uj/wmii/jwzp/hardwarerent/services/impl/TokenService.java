@@ -1,9 +1,9 @@
 package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
+
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.GrantedAuthority;
 import java.time.Instant;
@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 public class TokenService {
 
     private final JwtEncoder encoder;
+    private final JwtDecoder decoder;
 
-    public TokenService(JwtEncoder encoder) {
+    public TokenService(JwtEncoder encoder, JwtDecoder decoder) {
         this.encoder = encoder;
+        this.decoder = decoder;
     }
 
     public String generateToken(Authentication authentication) {
@@ -32,6 +34,14 @@ public class TokenService {
                 .claim("scope", scope)
                 .build();
         return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+    public Jwt decodeToken(String token) {
+        try {
+            Jwt jwt = this.decoder.decode(token);
+            return jwt;
+        } catch (JwtException e) {
+            throw new InvalidBearerTokenException("Invalid JWT token", e);
+        }
     }
 
 }

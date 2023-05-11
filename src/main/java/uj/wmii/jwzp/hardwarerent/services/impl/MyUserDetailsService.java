@@ -2,13 +2,13 @@ package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.Privilege;
 import uj.wmii.jwzp.hardwarerent.data.Role;
+import uj.wmii.jwzp.hardwarerent.data.UserProfile;
 import uj.wmii.jwzp.hardwarerent.repositories.RoleRepository;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.UserDetailsService;
@@ -34,11 +34,16 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         return user;
     }
+    public UserProfile getUserProfileByUsername(String username){
+        MyUser user = loadUserByUsername(username);
+        return new UserProfile(user.getUsername(),user.getFirstName(), user.getLastName(),user.getEmail());
+    }
     public Collection<? extends GrantedAuthority> getAuthorities(
             Collection<Role> roles) {
 
         return getGrantedAuthorities(getPrivileges(roles));
     }
+
     private List<String> getPrivileges(Collection<Role> roles) {
 
         List<String> privileges = new ArrayList<>();

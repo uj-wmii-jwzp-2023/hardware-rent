@@ -1,8 +1,13 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
 
@@ -17,13 +22,16 @@ public class Order {
 
     @ManyToOne(optional=false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnore
     @Getter @Setter
     private MyUser user;
     @Column(name = "order_date",nullable = false)
     @Getter @Setter
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date orderDate;
     @Column(name = "due_date",nullable = false)
     @Getter @Setter
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date dueDate;
     @OneToMany(mappedBy="order")
     @Getter @Setter
@@ -33,5 +41,6 @@ public class Order {
         this.user = user;
         this.orderDate = orderDate;
         this.dueDate = dueDate;
+        this.orderDetails = new HashSet<>();
     }
 }

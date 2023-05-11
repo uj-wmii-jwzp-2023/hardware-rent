@@ -52,6 +52,6 @@ public class AuthController {
         responseData.put("authorities", authentication.getAuthorities());
         responseData.put("accessToken", token);
         return ResponseEntity.ok().body(responseData);
-
     }
+
 }

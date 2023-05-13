@@ -24,7 +24,7 @@ public class AuthController {
     public AuthController(TokenService tokenService) {
         this.tokenService = tokenService;
     }
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity  token(Authentication authentication) {
         String token;

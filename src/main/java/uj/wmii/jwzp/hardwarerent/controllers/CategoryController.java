@@ -1,8 +1,10 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Category;
+import uj.wmii.jwzp.hardwarerent.data.dto.CategoryDto;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,7 @@ public class CategoryController {
             return ResponseEntity.internalServerError().body("internal server error"); // return error response
         }
         LOG.info("Proceeded request to get all categories");
-        return ResponseEntity.ok().body(categoriesReturned);
+        return ResponseEntity.ok().body(categoryService.getCategoryDtoList(categoriesReturned));
 
     }
 
@@ -71,13 +73,14 @@ public class CategoryController {
                 LOG.info("Failed to find category with id: '{}'",id);
                 return ResponseEntity.status(404).body("Failed to find category with id: "+id);
             }
+            LOG.info("Proceeded request to get category with id: '{}'",id);
+            return ResponseEntity.ok().body(new CategoryDto((Category) categoryReturned.get()) );
         }catch (Exception e)
         {
             LOG.error("Internal error: " + e.getMessage());
             return ResponseEntity.internalServerError().body("internal server error");
         }
-        LOG.info("Proceeded request to get category with id: '{}'",id);
-        return ResponseEntity.ok().body(categoryReturned);
+
     }
 
 }

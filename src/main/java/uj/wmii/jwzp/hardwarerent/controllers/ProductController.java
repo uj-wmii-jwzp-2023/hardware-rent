@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Category;
 import uj.wmii.jwzp.hardwarerent.data.Product;
+import uj.wmii.jwzp.hardwarerent.data.dto.ProductDto;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
 import java.net.URI;
@@ -33,14 +34,13 @@ public class ProductController {
         List<Product> productsReturned;
         try {
             productsReturned = productService.getAllProducts();
-
         }catch (Exception e)
         {
             LOG.error("Internal error: " + e.getMessage());
             return ResponseEntity.internalServerError().body("internal server error"); // return error response
         }
         LOG.info("Proceeded request to get all products");
-        return ResponseEntity.ok().body(productsReturned);
+        return ResponseEntity.ok().body(productService.getProductDtoList(productsReturned));
 
     }
 
@@ -54,13 +54,13 @@ public class ProductController {
                 LOG.info("Failed to find product with id: '{}'",id);
                 return ResponseEntity.status(404).body("Failed to find product with id: "+id);
             }
-        }catch (Exception e)
-        {
+            LOG.info("Proceeded request to get category with id: '{}'",id);
+            return ResponseEntity.ok().body(new ProductDto((Product) productReturned.get()));
+        }catch (Exception e) {
             LOG.error("Internal error: " + e.getMessage());
             return ResponseEntity.internalServerError().body("internal server error");
         }
-        LOG.info("Proceeded request to get category with id: '{}'",id);
-        return ResponseEntity.ok().body(productReturned);
+
     }
 
     @PostMapping

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import uj.wmii.jwzp.hardwarerent.data.Exceptions.invalidDates;
+import uj.wmii.jwzp.hardwarerent.data.Exceptions.InvalidDatesException;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
@@ -59,7 +59,7 @@ public class OrdersController {
                 LOG.error("internal server error while creating new order (find authenticated user)");
                 return ResponseEntity.internalServerError().body("Error while creating new order");
             }
-            Order orderAdded = orderService.createNewOrder(user,orderDateFormated, dueDateFormated);
+            Order orderAdded = orderService.createNewOrder(user, orderDateFormated, dueDateFormated);
             if (orderAdded == null){
                 LOG.error("internal server error while creating new order");
                 return ResponseEntity.internalServerError().body("Error while creating new order");
@@ -77,7 +77,7 @@ public class OrdersController {
                 LOG.info("Error while creating new order: " + e.getMessage());
                 return ResponseEntity.badRequest().body("illegal dates format"); // return error response
             }
-            if(e instanceof invalidDates){
+            if(e instanceof InvalidDatesException){
                 LOG.info("Error while creating new order: " + e.getMessage());
                 return ResponseEntity.badRequest().body("Error while creating new order: " + e.getMessage()); // return error response
             }

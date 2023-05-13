@@ -3,9 +3,11 @@ package uj.wmii.jwzp.hardwarerent.services.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uj.wmii.jwzp.hardwarerent.data.Product;
+import uj.wmii.jwzp.hardwarerent.data.dto.ProductDto;
 import uj.wmii.jwzp.hardwarerent.repositories.ProductRepository;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,6 +87,14 @@ public class ProductServiceImpl implements ProductService {
             existing.setAvailableQuantity(product.getAvailableQuantity());
         }
         return productRepository.save(existing);
+    }
+    @Override
+    public List<ProductDto> getProductDtoList(List<Product> products){
+        List<ProductDto> productDtoList = new ArrayList<>();
+        for (var product: products) {
+            productDtoList.add(new ProductDto(product));
+        }
+        return productDtoList;
     }
 
 }

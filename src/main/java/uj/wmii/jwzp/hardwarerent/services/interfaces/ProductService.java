@@ -1,5 +1,6 @@
 package uj.wmii.jwzp.hardwarerent.services.interfaces;
 import uj.wmii.jwzp.hardwarerent.data.Product;
+import uj.wmii.jwzp.hardwarerent.data.dto.ProductDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,5 +19,6 @@ public interface ProductService {
     void deleteProductById(Long id);
 
     Product updatePartOfProductById(Long id, Product product);
+    List<ProductDto> getProductDtoList(List<Product> products);
 
 }

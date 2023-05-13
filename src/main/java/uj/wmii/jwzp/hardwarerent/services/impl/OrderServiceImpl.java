@@ -1,7 +1,7 @@
 package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.stereotype.Service;
-import uj.wmii.jwzp.hardwarerent.data.Exceptions.invalidDates;
+import uj.wmii.jwzp.hardwarerent.data.Exceptions.InvalidDatesException;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.repositories.OrdersRepository;
@@ -23,7 +23,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order createNewOrder(MyUser user, Date orderDate, Date dueDate) {
         if (orderDate.compareTo(dueDate) > 0)
-            throw new invalidDates("orderDate should be smaller than dueDate");
+            throw new InvalidDatesException("orderDate should be smaller than dueDate");
         Order order = new Order(user,orderDate,dueDate);
         return ordersRepository.save(order);
     }

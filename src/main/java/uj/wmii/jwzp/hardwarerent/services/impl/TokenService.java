@@ -14,11 +14,9 @@ import java.util.stream.Collectors;
 public class TokenService {
 
     private final JwtEncoder encoder;
-    private final JwtDecoder decoder;
 
     public TokenService(JwtEncoder encoder, JwtDecoder decoder) {
         this.encoder = encoder;
-        this.decoder = decoder;
     }
 
     public String generateToken(Authentication authentication) {
@@ -34,14 +32,6 @@ public class TokenService {
                 .claim("scope", scope)
                 .build();
         return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-    }
-    public Jwt decodeToken(String token) {
-        try {
-            Jwt jwt = this.decoder.decode(token);
-            return jwt;
-        } catch (JwtException e) {
-            throw new InvalidBearerTokenException("Invalid JWT token", e);
-        }
     }
 
 }

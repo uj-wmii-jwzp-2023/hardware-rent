@@ -2,9 +2,13 @@ package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.stereotype.Service;
 import uj.wmii.jwzp.hardwarerent.data.Category;
+import uj.wmii.jwzp.hardwarerent.data.Product;
+import uj.wmii.jwzp.hardwarerent.data.dto.CategoryDto;
+import uj.wmii.jwzp.hardwarerent.data.dto.ProductDto;
 import uj.wmii.jwzp.hardwarerent.repositories.CategoryRepository;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +39,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category createNewCategory(Category category)
     {
+        category.setId(null); // to exclude option with existing id
         return categoryRepository.save(category);
+    }
+    @Override
+    public List<CategoryDto> getCategoryDtoList(List<Category> categories){
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        for (var category: categories) {
+            categoryDtoList.add(new CategoryDto(category));
+        }
+        return categoryDtoList;
     }
 }

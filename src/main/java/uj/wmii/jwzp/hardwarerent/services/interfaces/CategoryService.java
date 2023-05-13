@@ -15,5 +15,6 @@ public interface CategoryService {
     Optional<Category> getCategoryByName(String name);
     Category createNewCategory(Category category);
     List<CategoryDto> getCategoryDtoList(List<Category> categories);
+    void deleteCategoryById(Long id);
 
 }

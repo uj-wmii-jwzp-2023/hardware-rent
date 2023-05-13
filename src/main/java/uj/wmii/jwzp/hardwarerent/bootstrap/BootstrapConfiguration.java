@@ -50,6 +50,7 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 "tv 2000",
                 category_Tv,
                 900,
+                3,
                 3);
         pr0 = productRepository.save(pr0);
 
@@ -57,6 +58,7 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 "laptop 2000",
                 category_Laptop,
                 1000,
+                5,
                 5);
         pr1 = productRepository.save(pr1);
 
@@ -65,6 +67,7 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 "predator 500",
                 category_Laptop,
                 1200,
+                10,
                 10);
         pr2 = productRepository.save(pr2);
 

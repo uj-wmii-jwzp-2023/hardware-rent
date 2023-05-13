@@ -2,13 +2,12 @@ package uj.wmii.jwzp.hardwarerent.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Category;
 import uj.wmii.jwzp.hardwarerent.data.Product;
 import uj.wmii.jwzp.hardwarerent.data.dto.ProductDto;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
 import java.net.URI;
@@ -22,11 +21,13 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
+    private final CategoryService categoryService;
     private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
 
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -64,15 +65,22 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity createNewProduct(@RequestBody Product product) {
+    public ResponseEntity createNewProduct(@RequestBody ProductDto productDto) {
 
         Product savedProduct;
         try {
-            if(productService.getProductByModel(product.getModel()).isPresent()){
+            if(productService.getProductByModel(productDto.getModel()).isPresent()){
                 LOG.info("Received request to add product with already existing model");
                 return ResponseEntity.badRequest().body("product with such name already existed");
             }
-            savedProduct = productService.createNewProduct(product);
+            Optional category = categoryService.getCategoryByName(productDto.getCategoryName());
+            if(category.isEmpty()){
+                LOG.info("Received request to add product with non existed category");
+                return ResponseEntity.badRequest().body("no category with such name");
+            }
+            Product productToSave = new Product(productDto);
+            productToSave.setCategory(categoryService.getCategoryByName(productDto.getCategoryName()).get());
+            savedProduct = productService.createNewProduct(productToSave);
             if (savedProduct == null){
                 LOG.error("internal server error while creating new product");
                 return ResponseEntity.internalServerError().body("Error while creating new product");

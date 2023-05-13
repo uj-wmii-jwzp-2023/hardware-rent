@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uj.wmii.jwzp.hardwarerent.data.dto.ProductDto;
 
 import java.math.BigDecimal;
 
@@ -40,13 +41,21 @@ public class Product {
                    String model,
                    Category category,
                    int price,
-                   int quantity) {
+                   int availableQuantity,
+                   int overallQuantity) {
         this.companyName = companyName;
         this.model = model;
         this.price = new BigDecimal(price);
         this.category = category;
-        this.availableQuantity = quantity;
-        this.overallQuantity = quantity;
+        this.availableQuantity = availableQuantity;
+        this.overallQuantity = overallQuantity;
+    }
+    public Product(ProductDto productDto) {
+        this.companyName = productDto.getCompanyName();
+        this.model = productDto.getModel();
+        this.price = productDto.getPrice();
+        this.availableQuantity = productDto.getAvailableQuantity();
+        this.overallQuantity = productDto.getOverallQuantity();
     }
     @Override
     public boolean equals(Object o) {

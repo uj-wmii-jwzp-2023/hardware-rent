@@ -3,6 +3,7 @@ package uj.wmii.jwzp.hardwarerent.data.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uj.wmii.jwzp.hardwarerent.data.Category;
 import uj.wmii.jwzp.hardwarerent.data.Product;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 public class ProductDto {
 
     @Getter @Setter
@@ -25,7 +27,6 @@ public class ProductDto {
     private Integer availableQuantity;
     @Getter @Setter
     private Integer overallQuantity;
-    @JsonProperty("category")
     @Getter @Setter
     private String categoryName;
     public ProductDto(Product product) {

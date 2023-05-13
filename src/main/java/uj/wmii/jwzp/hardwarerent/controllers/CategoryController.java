@@ -80,7 +80,26 @@ public class CategoryController {
             LOG.error("Internal error: " + e.getMessage());
             return ResponseEntity.internalServerError().body("internal server error");
         }
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteProductById(@PathVariable("id") Long id) {
 
+        Optional targetCategory;
+        try {
+            targetCategory = categoryService.getCategoryById(id);
+            if(targetCategory.isEmpty()) {
+                LOG.info("Failed to find product with id: '{}'",id);
+                return ResponseEntity.status(404).body("Failed to find product with id: "+id);
+            }else {
+                categoryService.deleteCategoryById(id);
+            }
+        }catch (Exception e)
+        {
+            LOG.error("Internal error: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("internal server error"); // return error response
+        }
+        LOG.info("Proceeded request to delete product with id: '{}'",id);
+        return ResponseEntity.ok().body("deleted products with id: "+id);
     }
 
 }

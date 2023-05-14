@@ -2,10 +2,8 @@ package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.stereotype.Service;
 import uj.wmii.jwzp.hardwarerent.data.Exceptions.ProductNotFoundException;
-import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.data.OrderDetails;
 import uj.wmii.jwzp.hardwarerent.data.dto.OrderDetailsDto;
-import uj.wmii.jwzp.hardwarerent.repositories.OrderDetailsRepository;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderDetailsService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
@@ -14,11 +12,9 @@ import java.util.Set;
 
 @Service
 public class OrderDetailsServiceImpl implements OrderDetailsService {
-    private final OrderDetailsRepository orderDetailsRepository;
     private final ProductService productService;
 
-    public OrderDetailsServiceImpl(OrderDetailsRepository orderDetailsRepository, ProductService productService) {
-        this.orderDetailsRepository = orderDetailsRepository;
+    public OrderDetailsServiceImpl(ProductService productService) {
         this.productService = productService;
     }
     public Set<OrderDetails> createOrderDetailsListFromOrderDetailsDtoListWithoutOrder(Set<OrderDetailsDto> orderDetailsDtoSet){
@@ -30,15 +26,6 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
             orderDetailsSet.add(new OrderDetails(product.get(),orderDetailDto.getQuantity(), orderDetailDto.getDescription(),null));
         }
         return orderDetailsSet;
-    }
-
-    @Override
-    public Set<OrderDetails> createNewOrderDetails(Set<OrderDetails> orderDetails) {
-        Set<OrderDetails> orderDetailsAdded = new HashSet<>();
-        for (var orderDetail:orderDetails) {
-            orderDetailsAdded.add(orderDetailsRepository.save(orderDetail));
-        }
-        return orderDetailsAdded;
     }
 
 }

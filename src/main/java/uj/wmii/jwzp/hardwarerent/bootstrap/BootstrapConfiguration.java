@@ -16,20 +16,17 @@ public class BootstrapConfiguration implements CommandLineRunner {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final OrdersRepository ordersRepository;
-    private final  OrderDetailsRepository orderDetailsRepository;
     private final RegistrationController registrationController;
 
     public BootstrapConfiguration(CategoryRepository categoryRepository,
                                   ProductRepository productRepository,
                                   UserRepository userRepository,
                                   OrdersRepository ordersRepository,
-                                  OrderDetailsRepository orderDetailsRepository,
                                   RegistrationController registrationController) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.ordersRepository = ordersRepository;
-        this.orderDetailsRepository = orderDetailsRepository;
         this.registrationController = registrationController;
     }
 

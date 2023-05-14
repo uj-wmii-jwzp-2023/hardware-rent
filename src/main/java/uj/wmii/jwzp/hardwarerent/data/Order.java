@@ -32,7 +32,7 @@ public class Order {
     @Getter @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date dueDate;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter @Setter
     private Set<OrderDetails> orderDetails;
 

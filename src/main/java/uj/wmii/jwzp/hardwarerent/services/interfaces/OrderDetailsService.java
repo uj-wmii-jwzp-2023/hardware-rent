@@ -8,6 +8,4 @@ import java.util.Set;
 
 public interface OrderDetailsService {
     Set<OrderDetails> createOrderDetailsListFromOrderDetailsDtoListWithoutOrder(Set<OrderDetailsDto> orderDetailsDtoSet);
-    Set<OrderDetails> createNewOrderDetails(Set<OrderDetails> orderDetails);
-
 }

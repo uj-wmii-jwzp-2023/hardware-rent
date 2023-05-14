@@ -74,12 +74,10 @@ public class OrdersController {
                 return ResponseEntity.internalServerError().body("Error while creating new order");}
             //create order details and add to order
             var orderDetailsToAdd = orderDetailsService.createOrderDetailsListFromOrderDetailsDtoListWithoutOrder(orderDto.getOrderDetails());
-            var orderDetailsAdded = orderDetailsService.createNewOrderDetails(orderDetailsToAdd);
             for (var orderDetailToAdd: orderDetailsToAdd) {
                 orderDetailToAdd.setOrder(orderToAdd);}
             orderToAdd.setOrderDetails(orderDetailsToAdd);
             var orderAdded = orderService.createNewOrder(orderToAdd);
-            orderDetailsAdded = orderDetailsService.createNewOrderDetails(orderDetailsToAdd);
             //success
             LOG.info("Proceeded request to create new order");
             return ResponseEntity.created(URI.create("/orders/" + orderAdded.getId()))

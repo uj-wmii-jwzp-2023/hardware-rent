@@ -1,5 +1,6 @@
 package uj.wmii.jwzp.hardwarerent.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +17,7 @@ public class CategoryDto {
     private Long id;
     @Getter @Setter
     private String categoryName;
+    @JsonIgnore
     @Getter @Setter
     private Set<ProductDto> productDto;
     public CategoryDto(Category category){

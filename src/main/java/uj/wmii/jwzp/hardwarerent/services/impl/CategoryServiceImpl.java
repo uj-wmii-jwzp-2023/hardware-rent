@@ -36,6 +36,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Category createCategoryFromDto(CategoryDto categoryDto) {
+        return new Category(categoryDto);
+    }
+
+    @Override
     public Optional<Category> getCategoryByName(String name) {
         return categoryRepository.findCategoryByCategoryName(name);
     }
@@ -55,4 +60,5 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return categoryDtoList;
     }
+
 }

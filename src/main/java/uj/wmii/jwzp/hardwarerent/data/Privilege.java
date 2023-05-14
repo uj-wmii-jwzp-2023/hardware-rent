@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.Collection;
 
 @Entity
-@Table(name = "privileges", schema = "myschema")
+@Table(name = "privileges")
 @NoArgsConstructor
 public class Privilege {
 

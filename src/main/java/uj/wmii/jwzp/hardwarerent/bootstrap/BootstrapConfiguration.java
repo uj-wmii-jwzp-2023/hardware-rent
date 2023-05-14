@@ -42,31 +42,58 @@ public class BootstrapConfiguration implements CommandLineRunner {
         category_Laptop.setCategoryName("Laptop");
         category_Laptop = categoryRepository.save(category_Laptop);
 
-        Product pr0 = new Product(
-                "Samsung",
-                "tv 2000",
-                category_Tv,
-                900,
-                3,
-                3);
+        Product pr0 = Product.builder()
+                .companyName("Samsung")
+                .model("tv2000")
+                .category(category_Tv)
+                .price(new BigDecimal(900))
+                .availableQuantity(3)
+                .overallQuantity(3)
+                .build();
         pr0 = productRepository.save(pr0);
 
-        Product pr1 = new Product("Dell",
-                "laptop 2000",
-                category_Laptop,
-                1000,
-                5,
-                5);
+        Product pr1 = Product.builder()
+                .companyName("Dell")
+                .model("laptop 2000")
+                .category(category_Laptop)
+                .price(new BigDecimal(1000))
+                .availableQuantity(5)
+                .overallQuantity(5)
+                .build();
         pr1 = productRepository.save(pr1);
 
-        Product pr2 = new Product(
-                "Acer",
-                "predator 500",
-                category_Laptop,
-                1200,
-                10,
-                10);
+
+        Product pr2 = Product.builder()
+                .companyName("Acer")
+                .model("predator 500")
+                .category(category_Laptop)
+                .price(new BigDecimal(1200))
+                .availableQuantity(10)
+                .overallQuantity(10)
+                .build();
         pr2 = productRepository.save(pr2);
+
+
+        Product pr3 = Product.builder()
+                .companyName("Samsung")
+                .model("new Samsung tv 1")
+                .category(category_Tv)
+                .price(new BigDecimal(341))
+                .availableQuantity(2)
+                .overallQuantity(3)
+                .build();
+        pr3 = productRepository.save(pr3);
+
+
+        Product pr4 = Product.builder()
+                .companyName("Samsung")
+                .model("new samsung tv 2")
+                .category(category_Tv)
+                .price(new BigDecimal(704))
+                .availableQuantity(1)
+                .overallQuantity(8)
+                .build();
+        pr4 = productRepository.save(pr4);
 
         /*MyUser user = new MyUser("admin","admin","test","test","test");
         registrationController.registerUser(user);

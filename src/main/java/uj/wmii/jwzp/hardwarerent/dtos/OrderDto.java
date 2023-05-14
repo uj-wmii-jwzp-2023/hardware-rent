@@ -1,16 +1,11 @@
-package uj.wmii.jwzp.hardwarerent.data.dto;
+package uj.wmii.jwzp.hardwarerent.dtos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.Order;
-import uj.wmii.jwzp.hardwarerent.data.OrderDetails;
+import uj.wmii.jwzp.hardwarerent.dtos.OrderDetailsDto;
 
-import java.util.Date;
 import java.util.Set;
 
 @NoArgsConstructor

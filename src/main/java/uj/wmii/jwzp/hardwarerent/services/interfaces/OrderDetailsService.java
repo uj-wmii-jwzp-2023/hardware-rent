@@ -2,7 +2,7 @@ package uj.wmii.jwzp.hardwarerent.services.interfaces;
 
 import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.data.OrderDetails;
-import uj.wmii.jwzp.hardwarerent.data.dto.OrderDetailsDto;
+import uj.wmii.jwzp.hardwarerent.dtos.OrderDetailsDto;
 
 import java.util.Set;
 

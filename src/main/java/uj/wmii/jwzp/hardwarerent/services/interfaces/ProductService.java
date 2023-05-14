@@ -1,24 +1,25 @@
 package uj.wmii.jwzp.hardwarerent.services.interfaces;
 import uj.wmii.jwzp.hardwarerent.data.Product;
-import uj.wmii.jwzp.hardwarerent.data.dto.ProductDto;
+import uj.wmii.jwzp.hardwarerent.dtos.ProductDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
 
-    List<Product> getAllProducts();
+    List<ProductDto> getAllProducts(String companyName, BigDecimal price, Integer availableQuantity,
+                                    Integer overallQuantity, String categoryName);
 
-    Optional<Product> getProductById(Long id);
+    Optional<ProductDto> getProductById(Long id);
 
-    Product createNewProduct(Product product);
+    Optional<ProductDto> createNewProduct(ProductDto productDto);
 
-    Product updateWholeProductById(Long id, Product product);
+    Optional<Product> updateWholeProductById(Long id, ProductDto productDto);
     Optional<Product> getProductByModel(String model);
 
-    void deleteProductById(Long id);
+    Boolean deleteProductById(Long id);
 
-    Product updatePartOfProductById(Long id, Product product);
-    List<ProductDto> getProductDtoList(List<Product> products);
+    Optional<Product> updatePartOfProductById(Long id, ProductDto productDto);
 
 }

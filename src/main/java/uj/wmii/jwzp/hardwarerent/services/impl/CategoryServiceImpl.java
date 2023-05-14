@@ -2,9 +2,7 @@ package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.stereotype.Service;
 import uj.wmii.jwzp.hardwarerent.data.Category;
-import uj.wmii.jwzp.hardwarerent.data.Product;
-import uj.wmii.jwzp.hardwarerent.data.dto.CategoryDto;
-import uj.wmii.jwzp.hardwarerent.data.dto.ProductDto;
+import uj.wmii.jwzp.hardwarerent.dtos.CategoryDto;
 import uj.wmii.jwzp.hardwarerent.repositories.CategoryRepository;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
 

@@ -1,10 +1,6 @@
-package uj.wmii.jwzp.hardwarerent.data.dto;
+package uj.wmii.jwzp.hardwarerent.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import uj.wmii.jwzp.hardwarerent.data.Category;

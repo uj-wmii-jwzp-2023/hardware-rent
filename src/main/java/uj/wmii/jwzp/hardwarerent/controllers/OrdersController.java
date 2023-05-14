@@ -9,7 +9,7 @@ import uj.wmii.jwzp.hardwarerent.data.Exceptions.InvalidDatesException;
 import uj.wmii.jwzp.hardwarerent.data.Exceptions.ProductNotFoundException;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.Order;
-import uj.wmii.jwzp.hardwarerent.data.dto.OrderDto;
+import uj.wmii.jwzp.hardwarerent.dtos.OrderDto;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
 import uj.wmii.jwzp.hardwarerent.services.impl.MyUserDetailsService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderDetailsService;

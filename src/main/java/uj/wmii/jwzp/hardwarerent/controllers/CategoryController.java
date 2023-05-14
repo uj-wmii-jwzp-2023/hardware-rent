@@ -1,10 +1,9 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Category;
-import uj.wmii.jwzp.hardwarerent.data.dto.CategoryDto;
+import uj.wmii.jwzp.hardwarerent.dtos.CategoryDto;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

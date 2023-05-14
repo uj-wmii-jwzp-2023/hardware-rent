@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.Collection;
 
 @Entity
-@Table(name = "roles", schema = "myschema")
+@Table(name = "roles")
 @NoArgsConstructor
 public class Role {
 

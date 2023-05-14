@@ -1,4 +1,4 @@
-package uj.wmii.jwzp.hardwarerent.data.dto;
+package uj.wmii.jwzp.hardwarerent.dtos;
 
 import jakarta.persistence.*;
 import lombok.Getter;

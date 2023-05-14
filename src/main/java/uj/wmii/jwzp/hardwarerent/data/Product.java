@@ -1,35 +1,39 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import uj.wmii.jwzp.hardwarerent.data.dto.ProductDto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "products", schema = "myschema")
+@Table(name = "products")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter @Setter
     private Long id;
-    @Column(nullable = false, length = 100)
+    @NotNull
+    @NotBlank
     @Getter @Setter
     private String companyName;
-    @Column(nullable = false, length = 100)
+    @Column(unique = true)
+    @NotNull
+    @NotBlank
     @Getter @Setter
     private String model;
-    @Column(nullable = false)
+    @NotNull
     @Getter @Setter
     private BigDecimal price;
-    @Column(nullable = false)
+    @NotNull
     @Getter @Setter
     private Integer availableQuantity;
-    @Column(nullable = false)
+    @NotNull
     @Getter @Setter
     private Integer overallQuantity;
 
@@ -37,51 +41,5 @@ public class Product {
     @JoinColumn(name="category_id")
     @Getter @Setter
     private Category category;
-    public Product(String companyName,
-                   String model,
-                   Category category,
-                   int price,
-                   int availableQuantity,
-                   int overallQuantity) {
-        this.companyName = companyName;
-        this.model = model;
-        this.price = new BigDecimal(price);
-        this.category = category;
-        this.availableQuantity = availableQuantity;
-        this.overallQuantity = overallQuantity;
-    }
-    public Product(ProductDto productDto) {
-        this.companyName = productDto.getCompanyName();
-        this.model = productDto.getModel();
-        this.price = productDto.getPrice();
-        this.availableQuantity = productDto.getAvailableQuantity();
-        this.overallQuantity = productDto.getOverallQuantity();
-    }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Product product = (Product) o;
-
-        return id.equals(product.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", companyName='" + companyName + '\'' +
-                ", model='" + model + '\'' +
-                ", price=" + price +
-                ", available=" + availableQuantity +
-                ", overall=" + overallQuantity +
-                '}';
-    }
 
 }

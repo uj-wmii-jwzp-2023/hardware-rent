@@ -1,20 +1,17 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uj.wmii.jwzp.hardwarerent.data.dto.CategoryDto;
+import uj.wmii.jwzp.hardwarerent.dtos.CategoryDto;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "categories", schema = "myschema")
+@Table(name = "categories")
 @NoArgsConstructor
 public class Category {
 

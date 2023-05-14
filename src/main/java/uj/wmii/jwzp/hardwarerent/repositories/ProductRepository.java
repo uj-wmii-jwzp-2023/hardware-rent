@@ -5,12 +5,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import uj.wmii.jwzp.hardwarerent.data.Product;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    Optional<Product> getProductsByModel(String model);
+    Optional<Product> findByModel(String model);
 
+    List<Product> findAllByCompanyNameIsLikeIgnoreCase(String companyName);
+
+    List<Product> findAllByPriceLessThanEqual(BigDecimal price);
+
+    List<Product> findAllByAvailableQuantityGreaterThanEqual(Integer availableQuantity);
+    List<Product> findAllByOverallQuantityGreaterThanEqual(Integer availableQuantity);
+
+    List<Product> findAllByCategoryCategoryName(String categoryName);
 }

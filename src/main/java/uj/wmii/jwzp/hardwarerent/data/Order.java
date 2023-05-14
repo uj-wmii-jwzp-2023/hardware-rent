@@ -12,7 +12,7 @@ import java.util.Set;
 import lombok.*;
 
 @Entity
-@Table(name = "orders", schema = "myschema")
+@Table(name = "orders")
 @NoArgsConstructor
 public class Order {
     @Id

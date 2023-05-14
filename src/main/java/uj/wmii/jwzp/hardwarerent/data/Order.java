@@ -19,7 +19,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter @Setter
     private Long id;
-
     @ManyToOne(optional=false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
@@ -33,14 +32,15 @@ public class Order {
     @Getter @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date dueDate;
-    @OneToMany(mappedBy="order")
+    @OneToMany
     @Getter @Setter
     private Set<OrderDetails> orderDetails;
 
-    public Order(MyUser user, Date orderDate, Date dueDate) {
+    public Order(MyUser user, Date orderDate, Date dueDate, Set<OrderDetails> orderDetails) {
         this.user = user;
         this.orderDate = orderDate;
         this.dueDate = dueDate;
-        this.orderDetails = new HashSet<>();
+        this.orderDetails = orderDetails;
     }
+
 }

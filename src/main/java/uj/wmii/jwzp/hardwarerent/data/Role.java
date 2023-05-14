@@ -16,7 +16,7 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
+    @Getter @Setter
     private Long id;
     @Getter @Setter
     private String name;
@@ -24,7 +24,7 @@ public class Role {
     @Getter @Setter
     private Collection<MyUser> users;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany( fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_privileges",
             joinColumns = @JoinColumn(

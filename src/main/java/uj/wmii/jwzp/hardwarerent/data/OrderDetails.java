@@ -9,8 +9,8 @@ import lombok.*;
 public class OrderDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
-    private Long orderDetails_id;
+    @Getter @Setter
+    private Long id;
     @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     @Getter @Setter
@@ -23,13 +23,19 @@ public class OrderDetails {
     private String description;
     @ManyToOne(optional=false)
     @JoinColumn(name="id")
+    @JoinTable(
+            name = "order_and_order_details",
+            joinColumns = @JoinColumn(
+                    name = "order_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "order_detail_id", referencedColumnName = "id"))
     @Getter @Setter
     private Order order;
 
     public OrderDetails(Product product, int quantity, String description, Order order) {
         this.product = product;
         this.quantity = quantity;
-        this.description = description;
+        this.description = (description == null) ? "no description": description;
         this.order = order;
     }
 }

@@ -8,14 +8,18 @@ import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Exceptions.InvalidDatesException;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.Order;
+import uj.wmii.jwzp.hardwarerent.data.dto.OrderDto;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
 import uj.wmii.jwzp.hardwarerent.services.impl.MyUserDetailsService;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderDetailsService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderService;
 
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,10 +31,14 @@ public class OrdersController {
 
     private final OrderService orderService;
     private final MyUserDetailsService myUserDetailsService;
+    private final OrderDetailsService orderDetailsService;
+    private final Clock clock;
 
-    public OrdersController(OrderService orderService, UserRepository userRepository, MyUserDetailsService myUserDetailsService) {
+    public OrdersController(OrderService orderService, UserRepository userRepository, MyUserDetailsService myUserDetailsService, OrderDetailsService orderDetailsService, Clock clock) {
         this.orderService = orderService;
         this.myUserDetailsService = myUserDetailsService;
+        this.orderDetailsService = orderDetailsService;
+        this.clock = clock;
     }
     @GetMapping
     public ResponseEntity getAllOrders() {
@@ -48,22 +56,31 @@ public class OrdersController {
         return ResponseEntity.ok().body(orderReturned);
     }
     @PostMapping
-    public ResponseEntity createNewOrder(@RequestParam String orderDate,@RequestParam String dueDate, Authentication authentication)
+    public ResponseEntity createNewOrder(@RequestBody OrderDto orderDto, Authentication authentication)
     {
 
         try {
-            Date orderDateFormated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(orderDate);
-            Date dueDateFormated  = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(dueDate);
+            Date orderDateFormated =  Date.from(clock.instant());
+            Date dueDateFormated  = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(orderDto.getDueDate());
+            //user check
             MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
             if(user == null) {
                 LOG.error("internal server error while creating new order (find authenticated user)");
-                return ResponseEntity.internalServerError().body("Error while creating new order");
-            }
-            Order orderAdded = orderService.createNewOrder(user, orderDateFormated, dueDateFormated);
-            if (orderAdded == null){
+                return ResponseEntity.internalServerError().body("Error while creating new order");}
+            //create order
+            Order orderToAdd = new Order(user, orderDateFormated, dueDateFormated, new HashSet<>());
+            if (orderToAdd == null){
                 LOG.error("internal server error while creating new order");
-                return ResponseEntity.internalServerError().body("Error while creating new order");
-            }
+                return ResponseEntity.internalServerError().body("Error while creating new order");}
+            //create order details and add to order
+            var orderDetailsToAdd = orderDetailsService.createOrderDetailsListFromOrderDetailsDtoListWithoutOrder(orderDto.getOrderDetails());
+            var orderDetailsAdded = orderDetailsService.createNewOrderDetails(orderDetailsToAdd);
+            for (var orderDetailToAdd: orderDetailsToAdd) {
+                orderDetailToAdd.setOrder(orderToAdd);}
+            orderToAdd.setOrderDetails(orderDetailsToAdd);
+            var orderAdded = orderService.createNewOrder(orderToAdd);
+            orderDetailsAdded = orderDetailsService.createNewOrderDetails(orderDetailsToAdd);
+            //success
             LOG.info("Proceeded request to create new order");
             return ResponseEntity.created(URI.create("/orders/" + orderAdded.getId()))
                     .body("Order has been successfully created!");

@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Exceptions.InvalidDatesException;
 import uj.wmii.jwzp.hardwarerent.data.Exceptions.ProductNotFoundException;
+import uj.wmii.jwzp.hardwarerent.data.Exceptions.UnavailableProductQuantityException;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.data.dto.OrderDto;
@@ -14,6 +15,7 @@ import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
 import uj.wmii.jwzp.hardwarerent.services.impl.MyUserDetailsService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderDetailsService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderService;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
 import java.net.URI;
 import java.text.ParseException;
@@ -33,12 +35,14 @@ public class OrdersController {
     private final OrderService orderService;
     private final MyUserDetailsService myUserDetailsService;
     private final OrderDetailsService orderDetailsService;
+    private final ProductService productService;
     private final Clock clock;
 
-    public OrdersController(OrderService orderService, UserRepository userRepository, MyUserDetailsService myUserDetailsService, OrderDetailsService orderDetailsService, Clock clock) {
+    public OrdersController(OrderService orderService, UserRepository userRepository, MyUserDetailsService myUserDetailsService, OrderDetailsService orderDetailsService, ProductService productService, Clock clock) {
         this.orderService = orderService;
         this.myUserDetailsService = myUserDetailsService;
         this.orderDetailsService = orderDetailsService;
+        this.productService = productService;
         this.clock = clock;
     }
     @GetMapping
@@ -62,7 +66,7 @@ public class OrdersController {
 
         try {
             Date todaysDate =  Date.from(clock.instant());
-            Date orderDateFormated =  new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(orderDto.getOrderDate());
+            Date orderDateFormated =  todaysDate;//new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(orderDto.getOrderDate());
             Date dueDateFormated  = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(orderDto.getDueDate());
 
             //check order date
@@ -80,7 +84,6 @@ public class OrdersController {
 
             //create order details and set order
             var orderDetailsToAdd = orderDetailsService.createOrderDetailsListFromOrderDetailsDtoList(orderDto.getOrderDetails(),orderToAdd);
-
 
             //set orderDetails to order
             orderToAdd.setOrderDetails(orderDetailsToAdd);
@@ -110,6 +113,10 @@ public class OrdersController {
                 return ResponseEntity.badRequest().body("Error while creating new order: " + e.getMessage()); // return error response
             }
             if(e instanceof ProductNotFoundException){ // custom exception
+                LOG.info("Error while creating new order: " + e.getMessage());
+                return ResponseEntity.badRequest().body("Error while creating new order: " + e.getMessage()); // return error response
+            }
+            if(e instanceof UnavailableProductQuantityException){
                 LOG.info("Error while creating new order: " + e.getMessage());
                 return ResponseEntity.badRequest().body("Error while creating new order: " + e.getMessage()); // return error response
             }

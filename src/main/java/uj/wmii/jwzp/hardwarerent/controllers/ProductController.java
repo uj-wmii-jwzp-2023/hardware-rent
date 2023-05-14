@@ -78,9 +78,11 @@ public class ProductController {
                 LOG.info("Received request to add product with non existed category");
                 return ResponseEntity.badRequest().body("no category with such name");
             }
+
             Product productToSave = new Product(productDto);
             productToSave.setCategory(categoryService.getCategoryByName(productDto.getCategoryName()).get());
             savedProduct = productService.createNewProduct(productToSave);
+
             if (savedProduct == null){
                 LOG.error("internal server error while creating new product");
                 return ResponseEntity.internalServerError().body("Error while creating new product");

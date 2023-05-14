@@ -19,7 +19,7 @@ public class Privilege {
     @Getter @Setter
     private String name;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "privileges")
     @Getter @Setter
     private Collection<Role> roles;
 

@@ -61,8 +61,14 @@ public class OrdersController {
     {
 
         try {
-            Date orderDateFormated =  Date.from(clock.instant());
+            Date todaysDate =  Date.from(clock.instant());
+            Date orderDateFormated =  new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(orderDto.getOrderDate());
             Date dueDateFormated  = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(orderDto.getDueDate());
+
+            //check order date
+            if (todaysDate.compareTo(orderDateFormated) > 0)
+                throw new InvalidDatesException("orderDate should be greater or equals to today date");
+
             //user check
             MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
             if(user == null) {

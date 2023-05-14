@@ -7,5 +7,5 @@ import uj.wmii.jwzp.hardwarerent.data.dto.OrderDetailsDto;
 import java.util.Set;
 
 public interface OrderDetailsService {
-    Set<OrderDetails> createOrderDetailsListFromOrderDetailsDtoListWithoutOrder(Set<OrderDetailsDto> orderDetailsDtoSet);
+    Set<OrderDetails> createOrderDetailsListFromOrderDetailsDtoList(Set<OrderDetailsDto> orderDetailsDtoSet, Order order);
 }

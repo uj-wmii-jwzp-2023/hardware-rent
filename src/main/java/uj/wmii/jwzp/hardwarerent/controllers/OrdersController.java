@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Exceptions.InvalidDatesException;
+import uj.wmii.jwzp.hardwarerent.data.Exceptions.ProductNotFoundException;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.data.dto.OrderDto;
@@ -65,19 +66,25 @@ public class OrdersController {
             //user check
             MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
             if(user == null) {
-                LOG.error("internal server error while creating new order (find authenticated user)");
-                return ResponseEntity.internalServerError().body("Error while creating new order");}
+                LOG.error("cant get username from authentication or user not exist");
+                return ResponseEntity.badRequest().body("Error while searching user form authentication data");}
+
             //create order
             Order orderToAdd = new Order(user, orderDateFormated, dueDateFormated, new HashSet<>());
-            if (orderToAdd == null){
-                LOG.error("internal server error while creating new order");
-                return ResponseEntity.internalServerError().body("Error while creating new order");}
-            //create order details and add to order
-            var orderDetailsToAdd = orderDetailsService.createOrderDetailsListFromOrderDetailsDtoListWithoutOrder(orderDto.getOrderDetails());
-            for (var orderDetailToAdd: orderDetailsToAdd) {
-                orderDetailToAdd.setOrder(orderToAdd);}
+
+            //create order details and set order
+            var orderDetailsToAdd = orderDetailsService.createOrderDetailsListFromOrderDetailsDtoList(orderDto.getOrderDetails(),orderToAdd);
+
+
+            //set orderDetails to order
             orderToAdd.setOrderDetails(orderDetailsToAdd);
+
+            //saving order to repository
             var orderAdded = orderService.createNewOrder(orderToAdd);
+            if(orderAdded == null){
+                LOG.error("cant save order");
+                return ResponseEntity.internalServerError().body("Error while saving order");}
+
             //success
             LOG.info("Proceeded request to create new order");
             return ResponseEntity.created(URI.create("/orders/" + orderAdded.getId()))
@@ -85,14 +92,18 @@ public class OrdersController {
         }catch (Exception e)
         {
             if(e instanceof ParseException) {
-                LOG.info("Error while creating new order: " + e.getMessage());
+                LOG.info("Error while creating new order: illegal dates:" + e.getMessage());
                 return ResponseEntity.badRequest().body("illegal dates"); // return error response
             }
             if(e instanceof IllegalArgumentException){
-                LOG.info("Error while creating new order: " + e.getMessage());
+                LOG.info("Error while creating new order: illegal dates format:" + e.getMessage());
                 return ResponseEntity.badRequest().body("illegal dates format"); // return error response
             }
-            if(e instanceof InvalidDatesException){
+            if(e instanceof InvalidDatesException){ // custom exception
+                LOG.info("Error while creating new order: " + e.getMessage());
+                return ResponseEntity.badRequest().body("Error while creating new order: " + e.getMessage()); // return error response
+            }
+            if(e instanceof ProductNotFoundException){ // custom exception
                 LOG.info("Error while creating new order: " + e.getMessage());
                 return ResponseEntity.badRequest().body("Error while creating new order: " + e.getMessage()); // return error response
             }

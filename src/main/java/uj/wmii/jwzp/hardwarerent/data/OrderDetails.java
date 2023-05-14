@@ -21,8 +21,7 @@ public class OrderDetails {
     @Column(nullable = false, length = 100)
     @Getter @Setter
     private String description;
-    @ManyToOne(optional=false)
-    @JoinColumn(name="id")
+    @ManyToOne
     @JoinTable(
             name = "order_and_order_details",
             joinColumns = @JoinColumn(

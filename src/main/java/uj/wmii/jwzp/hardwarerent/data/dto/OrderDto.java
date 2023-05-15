@@ -34,7 +34,9 @@ public class OrderDto {
     public OrderDto(Order order) {
         this.user = order.getUser().getUsername();
         this.orderDate = order.getOrderDate().toString();
+        this.orderDate = this.orderDate.substring(0,this.orderDate.length()-4);
         this.dueDate = order.getDueDate().toString();
+        this.dueDate = this.dueDate.substring(0,this.dueDate.length()-2);
         this.description = (order.getDescription()== null) ? "no description": order.getDescription();
 
         this.orderDetails = new HashSet<>();

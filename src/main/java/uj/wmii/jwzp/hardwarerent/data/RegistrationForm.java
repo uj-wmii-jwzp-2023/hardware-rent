@@ -1,8 +1,10 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 public class RegistrationForm {
     @Getter @Setter
     private String username;

@@ -22,10 +22,10 @@ public class MyUser implements UserDetails{
     @Column(nullable = false, length = 100)
     @Getter @Setter
     private String password;
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     @Getter @Setter
     private String firstName;
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     @Getter @Setter
     private String lastName;
     @Column(name = "email_address",nullable = false, length = 100)

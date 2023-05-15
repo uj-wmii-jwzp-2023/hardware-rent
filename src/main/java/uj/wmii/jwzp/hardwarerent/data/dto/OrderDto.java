@@ -11,10 +11,13 @@ import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.data.OrderDetails;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @NoArgsConstructor
 public class OrderDto {
+    @JsonInclude(value= JsonInclude.Include.NON_EMPTY, content= JsonInclude.Include.NON_NULL)
     @Getter @Setter
     private Long id;
     @Getter @Setter
@@ -24,13 +27,17 @@ public class OrderDto {
     @Getter @Setter
     private String dueDate;
     @Getter @Setter
+    private String description;
+    @Getter @Setter
     private Set<OrderDetailsDto> orderDetails;
 
     public OrderDto(Order order) {
         this.user = order.getUser().getUsername();
         this.orderDate = order.getOrderDate().toString();
         this.dueDate = order.getDueDate().toString();
+        this.description = (order.getDescription()== null) ? "no description": order.getDescription();
 
+        this.orderDetails = new HashSet<>();
         for (var orderDetail: order.getOrderDetails()) {
             this.orderDetails.add(new OrderDetailsDto(orderDetail));}
     }

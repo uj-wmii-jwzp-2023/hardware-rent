@@ -32,7 +32,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
                         product.get().setAvailableQuantity(product.get().getAvailableQuantity() - orderDetailDto.getQuantity());
                     }
                 }
-            orderDetailsSet.add(new OrderDetails(product.get(),orderDetailDto.getQuantity(), orderDetailDto.getDescription(),order));
+            orderDetailsSet.add(new OrderDetails(product.get(),orderDetailDto.getQuantity(),order));
         }
         return orderDetailsSet;
     }

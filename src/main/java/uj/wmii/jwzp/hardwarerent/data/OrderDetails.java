@@ -18,10 +18,8 @@ public class OrderDetails {
     @Column(nullable = false, length = 100)
     @Getter @Setter
     private int quantity;
-    @Column(nullable = false, length = 100)
-    @Getter @Setter
-    private String description;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(
             name = "order_and_order_details",
             joinColumns = @JoinColumn(
@@ -31,10 +29,9 @@ public class OrderDetails {
     @Getter @Setter
     private Order order;
 
-    public OrderDetails(Product product, int quantity, String description, Order order) {
+    public OrderDetails(Product product, int quantity, Order order) {
         this.product = product;
         this.quantity = quantity;
-        this.description = (description == null) ? "no description": description;
         this.order = order;
     }
 }

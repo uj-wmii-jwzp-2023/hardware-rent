@@ -1,9 +1,11 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
+import com.fasterxml.jackson.core.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Exceptions.InvalidDatesException;
 import uj.wmii.jwzp.hardwarerent.data.Exceptions.ProductNotFoundException;
@@ -46,19 +48,31 @@ public class OrdersController {
         this.clock = clock;
     }
     @GetMapping
-    public ResponseEntity getAllOrders() {
+    public ResponseEntity getAllOrders(Authentication authentication) {
 
-        List<Order> orderReturned;
+        List<Order> ordersReturned;
+
         try {
-            orderReturned = orderService.getAllOrders();
-
+            //user check
+            MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
+            if(user == null) {
+                LOG.error("cant get username from authentication or user not exist");
+                return ResponseEntity.badRequest().body("Error while searching user form authentication data");}
+            if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
+                ordersReturned = orderService.getAllOrders();
+            }
+            else{
+                ordersReturned = orderService.getOrdersByUser(user);
+            }
+            //success
+            LOG.info("Proceeded request to get all orders");
+            return ResponseEntity.ok().body(orderService.getOrdersDtoList(ordersReturned));
         }catch (Exception e)
         {
             LOG.error("Internal error: " + e.getMessage());
             return ResponseEntity.internalServerError().body("internal server error"); // return error response
         }
-        LOG.info("Proceeded request to get all orders");
-        return ResponseEntity.ok().body(orderReturned);
+
     }
     @PostMapping
     public ResponseEntity createNewOrder(@RequestBody OrderDto orderDto, Authentication authentication)
@@ -80,7 +94,7 @@ public class OrdersController {
                 return ResponseEntity.badRequest().body("Error while searching user form authentication data");}
 
             //create order
-            Order orderToAdd = new Order(user, orderDateFormated, dueDateFormated, new HashSet<>());
+            Order orderToAdd = new Order(user, orderDateFormated, dueDateFormated,orderDto.getDescription(), new HashSet<>());
 
             //create order details and set order
             var orderDetailsToAdd = orderDetailsService.createOrderDetailsListFromOrderDetailsDtoList(orderDto.getOrderDetails(),orderToAdd);

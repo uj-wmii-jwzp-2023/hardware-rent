@@ -1,5 +1,6 @@
 package uj.wmii.jwzp.hardwarerent.services.interfaces;
 import uj.wmii.jwzp.hardwarerent.data.*;
+import uj.wmii.jwzp.hardwarerent.data.dto.OrderDto;
 
 import java.util.Date;
 import java.util.List;
@@ -12,4 +13,6 @@ public interface OrderService {
     List<Order> getAllOrders();
     Optional<Order> getOrderById(Long id);
     Order createNewOrder(Order order);
+    List<Order> getOrdersByUser(MyUser user);
+    List<OrderDto> getOrdersDtoList(List<Order> orders);
 }

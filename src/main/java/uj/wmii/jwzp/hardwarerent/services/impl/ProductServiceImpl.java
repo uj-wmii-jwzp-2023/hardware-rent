@@ -2,9 +2,11 @@ package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import uj.wmii.jwzp.hardwarerent.data.ArchivedProducts;
 import uj.wmii.jwzp.hardwarerent.data.Product;
 import uj.wmii.jwzp.hardwarerent.dtos.ProductDto;
 import uj.wmii.jwzp.hardwarerent.mappers.ProductMapper;
+import uj.wmii.jwzp.hardwarerent.repositories.ArchivedProductsRepository;
 import uj.wmii.jwzp.hardwarerent.repositories.CategoryRepository;
 import uj.wmii.jwzp.hardwarerent.repositories.ProductRepository;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
@@ -21,11 +23,15 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final CategoryRepository categoryRepository;
 
+    private final ArchivedProductsRepository archivedProductsRepository;
+
     public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper,
-                              CategoryRepository categoryRepository) {
+                              CategoryRepository categoryRepository,
+                              ArchivedProductsRepository archivedProductsRepository) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.categoryRepository = categoryRepository;
+        this.archivedProductsRepository = archivedProductsRepository;
     }
 
     @Override
@@ -94,13 +100,15 @@ public class ProductServiceImpl implements ProductService {
 
         Product newProduct = productMapper.productDtoToProduct(productDto);
         newProduct.setCategory(categoryRepository.findCategoryByCategoryName(productDto.getCategoryName()).orElse(null));
+        ArchivedProducts archivedProduct = new ArchivedProducts(newProduct);
+        archivedProductsRepository.save(archivedProduct);
         return Optional.of(productMapper.productToProductDto(productRepository.save(newProduct)));
     }
 
     @Override
     public Optional<Product> updateWholeProductById(Long id, ProductDto productDto) {
         Product existing = productRepository.findById(id).get();
-
+        ArchivedProducts archivedExisting = archivedProductsRepository.findArchivedProductsByProductId(id).get();
         existing.setAvailableQuantity(productDto.getAvailableQuantity());
         existing.setOverallQuantity(productDto.getOverallQuantity());
         existing.setModel(productDto.getModel());
@@ -110,6 +118,10 @@ public class ProductServiceImpl implements ProductService {
         && !categoryRepository.findCategoryByCategoryName(productDto.getCategoryName()).get()
                 .getCategoryName().equals(productDto.getCategoryName()))
             return Optional.empty();
+
+        archivedExisting.setCompanyName(productDto.getCompanyName());
+        archivedExisting.setModel(productDto.getModel());
+        archivedExisting.setPrice(productDto.getPrice());
 
         return Optional.of(productRepository.save(existing));
     }
@@ -129,16 +141,20 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<Product> updatePartOfProductById(Long id, ProductDto productDto) {
-        Product existing = productRepository.findById(id).orElseThrow();
+        Product existing = productRepository.findById(id).get();
+        ArchivedProducts archivedExisting = archivedProductsRepository.findArchivedProductsByProductId(id).get();
 
         if (StringUtils.hasText(productDto.getCompanyName())) {
             existing.setCompanyName(productDto.getCompanyName());
+            archivedExisting.setCompanyName(productDto.getCompanyName());
         }
         if (StringUtils.hasText(productDto.getModel())) {
             existing.setModel(productDto.getModel());
+            archivedExisting.setModel(productDto.getModel());
         }
         if (productDto.getPrice() != null) {
             existing.setPrice(productDto.getPrice());
+            archivedExisting.setPrice(productDto.getPrice());
         }
         if (productDto.getOverallQuantity() != null) {
             existing.setOverallQuantity(productDto.getOverallQuantity());
@@ -153,6 +169,11 @@ public class ProductServiceImpl implements ProductService {
                 return Optional.empty();
         }
         return Optional.of(productRepository.save(existing));
+    }
+
+    @Override
+    public List<ArchivedProducts> getAllArchivedProducts() {
+        return archivedProductsRepository.findAll();
     }
 
 }

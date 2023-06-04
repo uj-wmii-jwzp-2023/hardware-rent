@@ -79,7 +79,8 @@ public class OrdersController {
             Order orderToAdd = new Order(user, orderDateFormated, dueDateFormated, new HashSet<>());
 
             //create order details and set order
-            var orderDetailsToAdd = orderDetailsService.createOrderDetailsListFromOrderDetailsDtoList(orderDto.getOrderDetails(),orderToAdd);
+            var orderDetailsToAdd = orderDetailsService
+                    .createOrderDetailsListFromOrderDetailsDtoList(orderDto.getOrderDetails(),orderToAdd);
 
 
             //set orderDetails to order

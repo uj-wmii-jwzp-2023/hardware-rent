@@ -1,6 +1,7 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class Category {
 
     @OneToMany(mappedBy="category")
     @Getter @Setter
+    @JsonManagedReference
     private Set<Product> products;
 
     public Category(CategoryDto categoryDto){

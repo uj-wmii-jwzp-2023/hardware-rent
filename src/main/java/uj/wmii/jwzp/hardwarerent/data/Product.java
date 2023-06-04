@@ -1,5 +1,6 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -40,6 +41,7 @@ public class Product {
     @ManyToOne
     @JoinColumn(name="category_id")
     @Getter @Setter
+    @JsonBackReference
     private Category category;
 
 }

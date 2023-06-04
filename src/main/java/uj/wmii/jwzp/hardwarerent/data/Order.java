@@ -1,9 +1,6 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -34,6 +31,7 @@ public class Order {
     private Date dueDate;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
     @Getter @Setter
+    @JsonManagedReference
     private Set<OrderDetails> orderDetails;
 
     public Order(MyUser user, Date orderDate, Date dueDate, Set<OrderDetails> orderDetails) {

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import uj.wmii.jwzp.hardwarerent.data.Category;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class CategoryDto {
@@ -15,7 +16,7 @@ public class CategoryDto {
     private String categoryName;
     @JsonIgnore
     @Getter @Setter
-    private Set<ProductDto> productDto;
+    private Set<ProductDto> productDto = new HashSet<>();
     public CategoryDto(Category category){
         this.id = category.getId();
         this.categoryName = category.getCategoryName();

@@ -1,5 +1,7 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +31,7 @@ public class OrderDetails {
             inverseJoinColumns = @JoinColumn(
                     name = "order_detail_id", referencedColumnName = "id"))
     @Getter @Setter
+    @JsonBackReference
     private Order order;
 
     public OrderDetails(Product product, int quantity, String description, Order order) {

@@ -7,7 +7,6 @@ import uj.wmii.jwzp.hardwarerent.data.*;
 import uj.wmii.jwzp.hardwarerent.repositories.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Component
 public class BootstrapConfiguration implements CommandLineRunner {
@@ -18,16 +17,20 @@ public class BootstrapConfiguration implements CommandLineRunner {
     private final OrdersRepository ordersRepository;
     private final RegistrationController registrationController;
 
+    private final ArchivedProductsRepository archivedProductsRepository;
+
     public BootstrapConfiguration(CategoryRepository categoryRepository,
                                   ProductRepository productRepository,
                                   UserRepository userRepository,
                                   OrdersRepository ordersRepository,
-                                  RegistrationController registrationController) {
+                                  RegistrationController registrationController,
+                                  ArchivedProductsRepository archivedProductsRepository) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.ordersRepository = ordersRepository;
         this.registrationController = registrationController;
+        this.archivedProductsRepository = archivedProductsRepository;
     }
 
 
@@ -94,6 +97,12 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 .overallQuantity(8)
                 .build();
         pr4 = productRepository.save(pr4);
+
+        archivedProductsRepository.save(new ArchivedProducts(pr0));
+        archivedProductsRepository.save(new ArchivedProducts(pr1));
+        archivedProductsRepository.save(new ArchivedProducts(pr2));
+        archivedProductsRepository.save(new ArchivedProducts(pr3));
+        archivedProductsRepository.save(new ArchivedProducts(pr4));
 
         /*MyUser user = new MyUser("admin","admin","test","test","test");
         registrationController.registerUser(user);

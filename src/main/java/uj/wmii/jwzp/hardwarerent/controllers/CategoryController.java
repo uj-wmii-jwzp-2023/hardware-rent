@@ -36,7 +36,7 @@ public class CategoryController {
             return ResponseEntity.internalServerError().body("internal server error"); // return error response
         }
         LOG.info("Proceeded request to get all categories");
-        return ResponseEntity.ok().body(categoryService.getCategoryDtoList(categoriesReturned));
+        return ResponseEntity.ok().body(categoriesReturned);
 
     }
 
@@ -73,7 +73,7 @@ public class CategoryController {
                 return ResponseEntity.status(404).body("Failed to find category with id: "+id);
             }
             LOG.info("Proceeded request to get category with id: '{}'",id);
-            return ResponseEntity.ok().body(new CategoryDto((Category) categoryReturned.get()) );
+            return ResponseEntity.ok().body(categoryReturned);
         }catch (Exception e)
         {
             LOG.error("Internal error: " + e.getMessage());

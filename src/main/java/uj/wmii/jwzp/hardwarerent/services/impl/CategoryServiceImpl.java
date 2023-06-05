@@ -29,8 +29,11 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(id);
     }
     @Override
-    public void deleteCategoryById(Long id) {
+    public boolean deleteCategoryById(Long id) {
+        if (!categoryRepository.existsById(id))
+            return false;
         categoryRepository.deleteById(id);
+        return true;
     }
 
     @Override
@@ -45,10 +48,12 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public Category createNewCategory(Category category)
-    {
-        category.setId(null); // to exclude option with existing id
-        return categoryRepository.save(category);
+    public Optional<Category> createNewCategory(String categoryName) {
+
+        if (categoryRepository.findCategoryByCategoryName(categoryName).isPresent())
+            return Optional.empty();
+        Category newCategory = new Category(categoryName); // to exclude option with existing id
+        return Optional.of(categoryRepository.save(newCategory));
     }
     @Override
     public List<CategoryDto> getCategoryDtoList(List<Category> categories){

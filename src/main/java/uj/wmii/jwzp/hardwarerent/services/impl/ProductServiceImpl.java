@@ -37,8 +37,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getAllProducts(String companyName,
                                            BigDecimal price,
-                                           Integer availableQuantity,
-                                           Integer overallQuantity,
                                            String categoryName) {
 
         List<Product> toReturn;
@@ -48,14 +46,7 @@ public class ProductServiceImpl implements ProductService {
         else if(!StringUtils.hasText(companyName) && price != null) {
             toReturn = listAllByPriceSmallerThan(price); 
         }
-        else if(!StringUtils.hasText(companyName) && price == null && availableQuantity != null) {
-            toReturn = listAllByAvailableQuantityBiggerThan(availableQuantity); 
-        }
-        else if(!StringUtils.hasText(companyName) && price == null && availableQuantity == null && overallQuantity != null) {
-            toReturn = listAllByOverallQuantityBiggerThan(overallQuantity); 
-        }
-        else if(!StringUtils.hasText(companyName) && price == null
-                && availableQuantity == null && overallQuantity == null && StringUtils.hasText(categoryName)){
+        else if(!StringUtils.hasText(companyName) && price == null && StringUtils.hasText(categoryName)){
             toReturn = listAllByCategoryName(categoryName);
         }
         else {
@@ -68,14 +59,6 @@ public class ProductServiceImpl implements ProductService {
 
     private List<Product> listAllByCategoryName(String categoryName) {
         return productRepository.findAllByCategoryCategoryName(categoryName);
-    }
-
-    private List<Product> listAllByOverallQuantityBiggerThan(Integer overallQuantity) {
-        return productRepository.findAllByOverallQuantityGreaterThanEqual(overallQuantity);
-    }
-
-    private List<Product> listAllByAvailableQuantityBiggerThan(Integer availableQuantity) {
-        return productRepository.findAllByAvailableQuantityGreaterThanEqual(availableQuantity);
     }
 
     private List<Product> listAllByPriceSmallerThan(BigDecimal price) {
@@ -109,8 +92,6 @@ public class ProductServiceImpl implements ProductService {
     public Optional<Product> updateWholeProductById(Long id, ProductDto productDto) {
         Product existing = productRepository.findById(id).get();
         ArchivedProducts archivedExisting = archivedProductsRepository.findArchivedProductsByProductId(id).get();
-        existing.setAvailableQuantity(productDto.getAvailableQuantity());
-        existing.setOverallQuantity(productDto.getOverallQuantity());
         existing.setModel(productDto.getModel());
         existing.setPrice(productDto.getPrice());
         existing.setCompanyName(productDto.getCompanyName());
@@ -155,12 +136,6 @@ public class ProductServiceImpl implements ProductService {
         if (productDto.getPrice() != null) {
             existing.setPrice(productDto.getPrice());
             archivedExisting.setPrice(productDto.getPrice());
-        }
-        if (productDto.getOverallQuantity() != null) {
-            existing.setOverallQuantity(productDto.getOverallQuantity());
-        }
-        if (productDto.getAvailableQuantity() != null) {
-            existing.setAvailableQuantity(productDto.getAvailableQuantity());
         }
         if (StringUtils.hasText(productDto.getCategoryName())) {
             if (categoryRepository.findCategoryByCategoryName(productDto.getCategoryName()).isPresent()

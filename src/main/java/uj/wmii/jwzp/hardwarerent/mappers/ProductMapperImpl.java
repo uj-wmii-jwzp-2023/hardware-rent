@@ -16,8 +16,6 @@ public class ProductMapperImpl implements ProductMapper {
                 .companyName(product.getCompanyName())
                 .model(product.getModel())
                 .price(product.getPrice())
-                .availableQuantity(product.getAvailableQuantity())
-                .overallQuantity(product.getOverallQuantity())
                 .categoryName(product.getCategory().getCategoryName())
                 .build();
     }
@@ -32,8 +30,6 @@ public class ProductMapperImpl implements ProductMapper {
                 .companyName(productDto.getCompanyName())
                 .model(productDto.getModel())
                 .price(productDto.getPrice())
-                .availableQuantity(productDto.getAvailableQuantity())
-                .overallQuantity(productDto.getOverallQuantity())
                 .category(null)
                 .build();
     }

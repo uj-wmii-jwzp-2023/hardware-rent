@@ -23,10 +23,6 @@ public class ProductDto {
     @NotNull
     private BigDecimal price;
     @NotNull
-    private Integer availableQuantity;
-    @NotNull
-    private Integer overallQuantity;
-    @NotNull
     @NotBlank
     private String categoryName;
 }

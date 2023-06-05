@@ -36,7 +36,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
     public UserProfile getUserProfileByUsername(String username){
         MyUser user = loadUserByUsername(username);
-        return new UserProfile(user.getUsername(),user.getFirstName(), user.getLastName(),user.getEmail());
+        return new UserProfile(user.getUsername(),user.getFirstName(), user.getLastName(),user.getEmail(), user.getCash());
     }
     public Collection<? extends GrantedAuthority> getAuthorities(
             Collection<Role> roles) {

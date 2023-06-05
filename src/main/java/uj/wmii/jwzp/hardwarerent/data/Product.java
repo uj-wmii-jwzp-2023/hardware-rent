@@ -31,12 +31,6 @@ public class Product {
     @NotNull
     @Getter @Setter
     private BigDecimal price;
-    @NotNull
-    @Getter @Setter
-    private Integer availableQuantity;
-    @NotNull
-    @Getter @Setter
-    private Integer overallQuantity;
 
     @ManyToOne
     @JoinColumn(name="category_id")

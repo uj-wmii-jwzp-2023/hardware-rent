@@ -5,10 +5,11 @@ import uj.wmii.jwzp.hardwarerent.data.Exceptions.InvalidDatesException;
 import uj.wmii.jwzp.hardwarerent.data.MyUser;
 import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.data.OrderDetails;
+import uj.wmii.jwzp.hardwarerent.data.OrderStatus;
 import uj.wmii.jwzp.hardwarerent.repositories.OrdersRepository;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderService;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -23,7 +24,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order createNewOrder(MyUser user, Date orderDate, Date dueDate, Set<OrderDetails> orderDetails) {
+    public Order createNewOrder(MyUser user, LocalDate orderDate, LocalDate dueDate, Set<OrderDetails> orderDetails) {
         if (orderDate.compareTo(dueDate) > 0)
             throw new InvalidDatesException("orderDate should be smaller than dueDate");
         Order order = new Order(user,orderDate,dueDate, orderDetails);
@@ -35,8 +36,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order changeOrderInfo(Order order) {
-        return null;
+    public Optional<Order> changeOrderStatus(Long id, OrderStatus orderStatus) {
+        Optional<Order> savedOrder = ordersRepository.findById(id);
+        if (savedOrder.isEmpty())
+            return Optional.empty();
+        Order existing = savedOrder.get();
+        existing.setOrderStatus(orderStatus);
+        return Optional.of(ordersRepository.save(existing));
+
     }
 
     @Override

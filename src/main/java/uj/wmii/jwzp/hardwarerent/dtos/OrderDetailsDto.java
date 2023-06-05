@@ -23,8 +23,7 @@ public class OrderDetailsDto {
     private Long orderId;
 
     public OrderDetailsDto(OrderDetails orderDetails) {
-        this.productId = orderDetails.getProduct().getId();
-        this.quantity = orderDetails.getQuantity();
+        this.productId = orderDetails.getArchivedProducts().getProductId();
         this.description = (description == null) ? "no description": description;
         this.orderId = orderDetails.getOrder().getId();
     }

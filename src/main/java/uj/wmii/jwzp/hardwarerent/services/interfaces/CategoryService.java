@@ -12,9 +12,9 @@ public interface CategoryService {
 
     Optional<Category> getCategoryById(Long id);
     Optional<Category> getCategoryByName(String name);
-    Category createNewCategory(Category category);
+    Optional<Category> createNewCategory(String categoryName);
     List<CategoryDto> getCategoryDtoList(List<Category> categories);
-    void deleteCategoryById(Long id);
+    boolean deleteCategoryById(Long id);
     Category createCategoryFromDto(CategoryDto categoryDto);
 
 }

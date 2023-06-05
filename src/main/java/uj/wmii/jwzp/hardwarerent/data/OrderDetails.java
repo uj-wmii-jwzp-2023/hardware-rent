@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "order_details")
@@ -16,10 +17,7 @@ public class OrderDetails {
     @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     @Getter @Setter
-    private Product product;
-    @Column(nullable = false, length = 100)
-    @Getter @Setter
-    private int quantity;
+    private ArchivedProducts archivedProducts;
     @Column(nullable = false, length = 100)
     @Getter @Setter
     private String description;
@@ -34,9 +32,8 @@ public class OrderDetails {
     @JsonBackReference
     private Order order;
 
-    public OrderDetails(Product product, int quantity, String description, Order order) {
-        this.product = product;
-        this.quantity = quantity;
+    public OrderDetails(ArchivedProducts archivedProducts, String description, Order order) {
+        this.archivedProducts = archivedProducts;
         this.description = (description == null) ? "no description": description;
         this.order = order;
     }

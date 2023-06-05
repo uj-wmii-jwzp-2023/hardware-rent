@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Entity
@@ -45,6 +46,9 @@ public class MyUser implements UserDetails{
                     name = "role_id", referencedColumnName = "id"))
     @Getter @Setter
     private Collection<Role> roles;
+
+    @Getter @Setter
+    private BigDecimal cash = new BigDecimal("0.00");
     public MyUser() {
 
     }
@@ -57,6 +61,7 @@ public class MyUser implements UserDetails{
         this.email = user.email;
         this.enabled = user.enabled;
         this.tokenExpired = user.tokenExpired;
+        this.cash = user.cash;
         this.roles = user.roles;
     }
 
@@ -64,12 +69,14 @@ public class MyUser implements UserDetails{
                   String password,
                   String firstName,
                   String lastName,
-                  String email) {
+                  String email,
+                  BigDecimal cash) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.cash = cash;
         this.enabled = true;
         this.tokenExpired = false;
     }

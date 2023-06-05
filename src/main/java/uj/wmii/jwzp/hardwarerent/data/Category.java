@@ -3,6 +3,7 @@ package uj.wmii.jwzp.hardwarerent.data;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class Category {
     @Getter @Setter
     private Long id;
     @Column(nullable = false, length = 100)
+    @NotNull
     @Getter @Setter
     private String categoryName;
 
@@ -31,6 +33,11 @@ public class Category {
 
     public Category(CategoryDto categoryDto){
         this.categoryName = categoryDto.getCategoryName();
+        this.products = new HashSet<>();
+    }
+
+    public Category(String categoryName) {
+        this.categoryName = categoryName;
         this.products = new HashSet<>();
     }
     @Override

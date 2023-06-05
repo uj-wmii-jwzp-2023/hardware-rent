@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public interface ProductService {
 
-    List<ProductDto> getAllProducts(String companyName, BigDecimal price, Integer availableQuantity,
-                                    Integer overallQuantity, String categoryName);
+    List<ProductDto> getAllProducts(String companyName, BigDecimal price, String categoryName);
 
     Optional<ProductDto> getProductById(Long id);
 

@@ -1,5 +1,7 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
+import jakarta.validation.constraints.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Category;
@@ -16,7 +18,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
-    private static final Logger LOG = LoggerFactory.getLogger(CategoryController.class);
 
     private final CategoryService categoryService;
 
@@ -25,80 +26,35 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity getAllCategories()
-    {
+    public List<Category> getAllCategories() {
         List<Category> categoriesReturned;
-        try {
-            categoriesReturned = categoryService.getAllCategories();
-        }catch (Exception e)
-        {
-            LOG.error("Internal error: " + e.getMessage());
-            return ResponseEntity.internalServerError().body("internal server error"); // return error response
-        }
-        LOG.info("Proceeded request to get all categories");
-        return ResponseEntity.ok().body(categoriesReturned);
-
+        categoriesReturned = categoryService.getAllCategories();
+        return categoriesReturned;
     }
 
     @PostMapping
-    public ResponseEntity createNewCategory(@RequestBody Category category) {
-        Category savedCategory;
-        try {
-            if(categoryService.getCategoryByName(category.getCategoryName()).isPresent()){
-                LOG.info("Received request to add category with already existing name");
-                return ResponseEntity.badRequest().body("Category with such name already existed");
-            }
-            savedCategory = categoryService.createNewCategory(category);
-            if (savedCategory == null){
-                LOG.error("internal server error while creating new category");
-                return ResponseEntity.internalServerError().body("Error while creating new category");
-            }
-        }catch (Exception e)
-        {
-            LOG.error("Internal error: " + e.getMessage());
-            return ResponseEntity.internalServerError().body("internal server error"); // return error response
-        }
-        LOG.info("Proceeded request to create new category");
-        return ResponseEntity.created(URI.create("/categories/" + savedCategory.getId()))
+    public ResponseEntity createNewCategory(@RequestBody String categoryName) {
+        Optional<Category> savedCategory = categoryService.createNewCategory(categoryName);
+        if (savedCategory.isEmpty())
+            throw new AlreadyExistsException("Category with such name already exists!");
+        return ResponseEntity.created(URI.create("/categories/" + savedCategory.get().getId()))
                 .body("Category has been successfully created!");
     }
     @GetMapping("{id}")
-    public ResponseEntity getCategoryById(@PathVariable Long id)
+    public Category getCategoryById(@PathVariable Long id)
     {
-        Optional categoryReturned;
-        try{
-            categoryReturned = categoryService.getCategoryById(id);
-            if(categoryReturned.isEmpty()) {
-                LOG.info("Failed to find category with id: '{}'",id);
-                return ResponseEntity.status(404).body("Failed to find category with id: "+id);
-            }
-            LOG.info("Proceeded request to get category with id: '{}'",id);
-            return ResponseEntity.ok().body(categoryReturned);
-        }catch (Exception e)
-        {
-            LOG.error("Internal error: " + e.getMessage());
-            return ResponseEntity.internalServerError().body("internal server error");
-        }
+        return categoryService.getCategoryById(id).orElseThrow(
+                () -> new NotFoundException("Failed to find category with id: " + id));
     }
     @DeleteMapping("{id}")
     public ResponseEntity deleteProductById(@PathVariable("id") Long id) {
+        if (categoryService.getCategoryById(id).isPresent() &&
+        !categoryService.getCategoryById(id).get().getProducts().isEmpty())
+            throw new CategoryRemovalException("Cannot delete category. Please delete all products from the category first!");
+        if (!categoryService.deleteCategoryById(id))
+            throw new NotFoundException("Failed to find category with id: " + id);
 
-        Optional targetCategory;
-        try {
-            targetCategory = categoryService.getCategoryById(id);
-            if(targetCategory.isEmpty()) {
-                LOG.info("Failed to find product with id: '{}'",id);
-                return ResponseEntity.status(404).body("Failed to find product with id: "+id);
-            }else {
-                categoryService.deleteCategoryById(id);
-            }
-        }catch (Exception e)
-        {
-            LOG.error("Internal error: " + e.getMessage());
-            return ResponseEntity.internalServerError().body("internal server error"); // return error response
-        }
-        LOG.info("Proceeded request to delete product with id: '{}'",id);
-        return ResponseEntity.ok().body("deleted products with id: "+id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 }

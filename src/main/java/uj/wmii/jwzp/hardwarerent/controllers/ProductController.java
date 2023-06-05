@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.ArchivedProducts;
 import uj.wmii.jwzp.hardwarerent.data.Product;
@@ -31,10 +32,8 @@ public class ProductController {
     @GetMapping
     public List<ProductDto> getAllProducts(@RequestParam(required = false)String companyName,
                                            @RequestParam(required = false)BigDecimal price,
-                                           @RequestParam(required = false)Integer availableQuantity,
-                                           @RequestParam(required = false)Integer overallQuantity,
                                            @RequestParam(required = false)String categoryName) {
-        return productService.getAllProducts(companyName, price, availableQuantity, overallQuantity, categoryName);
+        return productService.getAllProducts(companyName, price, categoryName);
     }
 
     @GetMapping("{id}")

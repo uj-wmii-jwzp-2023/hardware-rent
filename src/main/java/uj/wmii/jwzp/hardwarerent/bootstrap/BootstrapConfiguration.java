@@ -50,8 +50,6 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 .model("tv2000")
                 .category(category_Tv)
                 .price(new BigDecimal(900))
-                .availableQuantity(3)
-                .overallQuantity(3)
                 .build();
         pr0 = productRepository.save(pr0);
 
@@ -60,8 +58,6 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 .model("laptop 2000")
                 .category(category_Laptop)
                 .price(new BigDecimal(1000))
-                .availableQuantity(5)
-                .overallQuantity(5)
                 .build();
         pr1 = productRepository.save(pr1);
 
@@ -71,8 +67,6 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 .model("predator 500")
                 .category(category_Laptop)
                 .price(new BigDecimal(1200))
-                .availableQuantity(10)
-                .overallQuantity(10)
                 .build();
         pr2 = productRepository.save(pr2);
 
@@ -82,8 +76,6 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 .model("new Samsung tv 1")
                 .category(category_Tv)
                 .price(new BigDecimal(341))
-                .availableQuantity(2)
-                .overallQuantity(3)
                 .build();
         pr3 = productRepository.save(pr3);
 
@@ -93,8 +85,6 @@ public class BootstrapConfiguration implements CommandLineRunner {
                 .model("new samsung tv 2")
                 .category(category_Tv)
                 .price(new BigDecimal(704))
-                .availableQuantity(1)
-                .overallQuantity(8)
                 .build();
         pr4 = productRepository.save(pr4);
 

@@ -27,6 +27,13 @@ public class CustomErrorController {
         return ResponseEntity.status(400).body(message);
     }
 
+    @ExceptionHandler(CategoryRemovalException.class)
+    public ResponseEntity<String> handleCategoryRemovalErrors(CategoryRemovalException exception) {
+        String message = exception.getMessage();
+
+        return ResponseEntity.status(400).body(message);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleBindErrors(MethodArgumentNotValidException exception) {
         var errors = exception.getFieldErrors().stream().map(

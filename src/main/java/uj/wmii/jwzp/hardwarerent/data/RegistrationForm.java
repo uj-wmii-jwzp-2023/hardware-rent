@@ -3,6 +3,8 @@ package uj.wmii.jwzp.hardwarerent.data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 public class RegistrationForm {
     @Getter @Setter
     private String username;
@@ -61,6 +63,7 @@ public class RegistrationForm {
                 password,
                 firstName,
                 lastName,
-                email);
+                email,
+                new BigDecimal("0.00"));
     }
 }

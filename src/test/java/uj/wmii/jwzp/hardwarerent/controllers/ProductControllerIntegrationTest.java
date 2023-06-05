@@ -56,7 +56,7 @@ class ProductControllerIntegrationTest {
 
     @Test
     void testGetAllProducts() {
-        List<ProductDto> dtos = productController.getAllProducts(null, null, null, null, null);
+        List<ProductDto> dtos = productController.getAllProducts(null, null, null);
 
         assertEquals(5, dtos.size());
     }
@@ -112,21 +112,6 @@ class ProductControllerIntegrationTest {
                 .andExpect(jsonPath("$.length()", is(2)));
     }
 
-    @Test
-    void testGetProductByAvailableQuantity() throws Exception {
-        mockMvc.perform(get("/products")
-                        .queryParam("availableQuantity", "3"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(3)));
-    }
-
-    @Test
-    void testGetProductByOverallQuantity() throws Exception {
-        mockMvc.perform(get("/products")
-                        .queryParam("overallQuantity", "8"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(2)));
-    }
 
     @Test
     void testGetProductByCategoryName() throws Exception {
@@ -144,8 +129,6 @@ class ProductControllerIntegrationTest {
                 .companyName("Samsung")
                 .price(new BigDecimal("333.44"))
                 .model("neeeeewwww")
-                .availableQuantity(4)
-                .overallQuantity(6)
                 .categoryName("TV")
                 .build();
 
@@ -167,8 +150,6 @@ class ProductControllerIntegrationTest {
                 .companyName("Samsung")
                 .price(new BigDecimal("333.44"))
                 .model("neeeeewwww")
-                .availableQuantity(4)
-                .overallQuantity(6)
                 .categoryName("TV11111")
                 .build();
 
@@ -182,8 +163,6 @@ class ProductControllerIntegrationTest {
                 .companyName("Samsung")
                 .price(new BigDecimal("333.44"))
                 .model("tv2000")
-                .availableQuantity(4)
-                .overallQuantity(6)
                 .categoryName("TV")
                 .build();
 
@@ -199,8 +178,6 @@ class ProductControllerIntegrationTest {
                 .companyName("Samsung")
                 .price(new BigDecimal("333.44"))
                 .model("neeeeewwww")
-                .availableQuantity(4)
-                .overallQuantity(6)
                 .categoryName("TV")
                 .build();
 
@@ -219,8 +196,6 @@ class ProductControllerIntegrationTest {
                 .companyName("Samsung")
                 .price(new BigDecimal("333.44"))
                 .model("neeeeewwww")
-                .availableQuantity(4)
-                .overallQuantity(6)
                 .categoryName("TV")
                 .build();
 
@@ -233,8 +208,6 @@ class ProductControllerIntegrationTest {
         ProductDto productToAdd = ProductDto.builder()
                 .price(new BigDecimal("333.44"))
                 .model("neeeeewwww")
-                .availableQuantity(4)
-                .overallQuantity(6)
                 .categoryName("TV")
                 .build();
 

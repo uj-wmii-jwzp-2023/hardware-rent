@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
@@ -16,6 +15,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uj.wmii.jwzp.hardwarerent.data.Product;
 import uj.wmii.jwzp.hardwarerent.dtos.ProductDto;
+import uj.wmii.jwzp.hardwarerent.exceptions.AlreadyExistsException;
+import uj.wmii.jwzp.hardwarerent.exceptions.NotFoundException;
 import uj.wmii.jwzp.hardwarerent.repositories.CategoryRepository;
 import uj.wmii.jwzp.hardwarerent.repositories.ProductRepository;
 

@@ -1,4 +1,4 @@
-package uj.wmii.jwzp.hardwarerent.controllers;
+package uj.wmii.jwzp.hardwarerent.exceptions;
 
 public class AlreadyExistsException extends RuntimeException{
     public AlreadyExistsException() {

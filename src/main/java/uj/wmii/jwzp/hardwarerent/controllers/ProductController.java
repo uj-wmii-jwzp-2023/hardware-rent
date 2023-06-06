@@ -2,23 +2,18 @@ package uj.wmii.jwzp.hardwarerent.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.ArchivedProducts;
-import uj.wmii.jwzp.hardwarerent.data.Product;
 import uj.wmii.jwzp.hardwarerent.dtos.ProductDto;
-import uj.wmii.jwzp.hardwarerent.mappers.ProductMapper;
-import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
+import uj.wmii.jwzp.hardwarerent.exceptions.AlreadyExistsException;
+import uj.wmii.jwzp.hardwarerent.exceptions.NotFoundException;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @CrossOrigin

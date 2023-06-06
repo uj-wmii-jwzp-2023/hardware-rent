@@ -13,13 +13,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uj.wmii.jwzp.hardwarerent.data.Category;
-import uj.wmii.jwzp.hardwarerent.data.Product;
+import uj.wmii.jwzp.hardwarerent.exceptions.AlreadyExistsException;
+import uj.wmii.jwzp.hardwarerent.exceptions.NotFoundException;
 import uj.wmii.jwzp.hardwarerent.repositories.CategoryRepository;
 import uj.wmii.jwzp.hardwarerent.repositories.ProductRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;

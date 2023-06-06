@@ -51,7 +51,7 @@ public class Order {
         this.dueDate = dueDate;
         this.orderDetails = orderDetails;
         this.overallCashSum = new BigDecimal("0.00");
-        this.orderStatus = OrderStatus.CREATED;
+        this.orderStatus = OrderStatus.INITIALIZED;
     }
 
     public void setOverallCashSum() {

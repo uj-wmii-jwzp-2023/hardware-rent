@@ -1,14 +1,13 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.Category;
-import uj.wmii.jwzp.hardwarerent.dtos.CategoryDto;
+import uj.wmii.jwzp.hardwarerent.exceptions.AlreadyExistsException;
+import uj.wmii.jwzp.hardwarerent.exceptions.CategoryRemovalException;
+import uj.wmii.jwzp.hardwarerent.exceptions.NotFoundException;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.CategoryService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.List;

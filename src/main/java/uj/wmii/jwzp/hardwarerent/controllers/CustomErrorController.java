@@ -1,13 +1,14 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
-import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import uj.wmii.jwzp.hardwarerent.exceptions.*;
 
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @ControllerAdvice
@@ -34,6 +35,13 @@ public class CustomErrorController {
         return ResponseEntity.status(400).body(message);
     }
 
+    @ExceptionHandler(InvalidDatesException.class)
+    public ResponseEntity<String> handleInvalidDatesErrors(InvalidDatesException exception) {
+        String message = exception.getMessage();
+
+        return ResponseEntity.status(400).body(message);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleBindErrors(MethodArgumentNotValidException exception) {
         var errors = exception.getFieldErrors().stream().map(
@@ -44,5 +52,25 @@ public class CustomErrorController {
                 }
         ).toList();
         return ResponseEntity.status(400).body(errors);
+    }
+
+    @ExceptionHandler(NotExistingUserException.class)
+    public ResponseEntity<String> handleLoginErrors(NotExistingUserException exception) {
+        String message = exception.getMessage();
+
+        return ResponseEntity.status(403).body(message);
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<String> handleDatesParseErrors(DateTimeParseException exception) {
+        String message = exception.getMessage();
+        return ResponseEntity.status(400).body(message);
+    }
+
+    @ExceptionHandler(NoEnoughMoneyException.class)
+    public ResponseEntity<String> handleNoMoneyErrors(NoEnoughMoneyException exception) {
+        String message = exception.getMessage();
+
+        return ResponseEntity.status(400).body(message);
     }
 }

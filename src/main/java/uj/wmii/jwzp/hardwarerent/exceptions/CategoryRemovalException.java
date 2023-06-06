@@ -1,4 +1,4 @@
-package uj.wmii.jwzp.hardwarerent.controllers;
+package uj.wmii.jwzp.hardwarerent.exceptions;
 
 public class CategoryRemovalException extends RuntimeException{
     public CategoryRemovalException() {

@@ -1,4 +1,4 @@
-package uj.wmii.jwzp.hardwarerent.data.Exceptions;
+package uj.wmii.jwzp.hardwarerent.exceptions;
 
 public class InvalidDatesException extends RuntimeException {
     public InvalidDatesException(String message) {

@@ -16,8 +16,6 @@ public class OrderDetailsDto {
     @Getter @Setter
     private Long productId;
     @Getter @Setter
-    private int quantity;
-    @Getter @Setter
     private String description;
     @Getter @Setter
     private Long orderId;

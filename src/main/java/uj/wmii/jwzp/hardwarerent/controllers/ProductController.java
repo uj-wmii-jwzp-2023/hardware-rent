@@ -1,73 +1,94 @@
 package uj.wmii.jwzp.hardwarerent.controllers;
 
-import org.springframework.http.HttpHeaders;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uj.wmii.jwzp.hardwarerent.data.Product;
-import uj.wmii.jwzp.hardwarerent.services.ProductService;
+import uj.wmii.jwzp.hardwarerent.data.ArchivedProducts;
+import uj.wmii.jwzp.hardwarerent.dtos.ProductDto;
+import uj.wmii.jwzp.hardwarerent.exceptions.AlreadyExistsException;
+import uj.wmii.jwzp.hardwarerent.exceptions.NotFoundException;
+import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/products")
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public List<ProductDto> getAllProducts(@RequestParam(required = false)String companyName,
+                                           @RequestParam(required = false)BigDecimal price,
+                                           @RequestParam(required = false)String categoryName) {
+        return productService.getAllProducts(companyName, price, categoryName);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getProductById(@PathVariable(name = "id") Long id) {
-        var productReturned = productService.getProductById(id);
-        if (productReturned.isEmpty())
-            return ResponseEntity.status(404).body("Product with id: " + id + " does not exist!");
-        return ResponseEntity.ok().body(productReturned);
+    public ProductDto getProductById(@PathVariable(name = "id") Long id) {
+
+        return productService.getProductById(id).orElseThrow(
+                () -> new NotFoundException("Failed to find product with id: " + id));
+
+    }
+
+    @GetMapping("/archived")
+    public List<ArchivedProducts> getAllArchived() {
+        return productService.getAllArchivedProducts();
     }
 
     @PostMapping
-    public ResponseEntity<String> createNewProduct(@RequestBody Product product) {
+    public ResponseEntity createNewProduct(@Valid @RequestBody ProductDto productDto) {
+        if (productService.getProductByModel(productDto.getModel()).isPresent())
+            throw new AlreadyExistsException("Product with such name already exists!");
+        Optional<ProductDto> savedProduct = productService.createNewProduct(productDto);
+        if (savedProduct.isEmpty())
+            throw new NotFoundException("No category with name: " + productDto.getCategoryName());
 
-        Product savedProduct = productService.createNewProduct(product);
-
-        return ResponseEntity.created(URI.create("/products/" + savedProduct.getProduct_id()))
+        return ResponseEntity.created(URI.create("/products/" + savedProduct.get().getId()))
                 .body("Product has been successfully created!");
+
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<String> updateWholeProductById(@PathVariable("id") Long id, @RequestBody Product product) {
-        productService.updateWholeProductById(id, product);
+    public ResponseEntity updateWholeProductById(@PathVariable("id") Long id, @Valid @RequestBody ProductDto productDto) {
+        if (productService.getProductById(id).isEmpty())
+            throw new NotFoundException("Failed to find product with id: " + id);
+        if (productService.getProductByModel(productDto.getModel()).isPresent())
+            throw new AlreadyExistsException("Product with such name already exists!");
+        if (productService.updateWholeProductById(id, productDto).isEmpty())
+            throw new NotFoundException("Category cannot be changed!");
 
-        return ResponseEntity.noContent().header("Location", "/products/" + id).build();
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteProductById(@PathVariable("id") Long id) {
-        productService.deleteProductById(id);
+    public ResponseEntity deleteProductById(@PathVariable("id") Long id) {
 
-        return ResponseEntity.status(204).build();
+        if (!productService.deleteProductById(id)) {
+            throw new NotFoundException("Failed to find product with id: " + id);
+        }
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<String> updatePartOfProductById(@PathVariable("id") Long id, @RequestBody Product product) {
-        productService.updatePartOfProductById(id, product);
+    public ResponseEntity updatePartOfProductById(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
+        if (productService.getProductById(id).isEmpty())
+            throw new NotFoundException("Failed to find product with id: " + id);
+        if (productService.getProductByModel(productDto.getModel()).isPresent())
+            throw new AlreadyExistsException("Product with such name already exists!");
+        if (productService.updatePartOfProductById(id, productDto).isEmpty())
+            throw new NotFoundException("Category cannot be changed!");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/products/" + id.toString());
-
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(params = "availability")
-    public List<Product> getProductsByAvailability(@RequestParam Boolean availability) {
-        return productService.getProductsByAvailability(availability);
-    }
+
 }

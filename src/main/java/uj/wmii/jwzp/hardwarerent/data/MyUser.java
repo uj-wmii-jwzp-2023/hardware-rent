@@ -1,97 +1,89 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Entity
-public class MyUser implements UserDetails {
+@Table(name = "users")
+public class MyUser implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+    @Getter private Long id;
+    @Column(nullable = false, length = 100)
+    @Getter @Setter
     private String username;
+    @Column(nullable = false, length = 100)
+    @Getter @Setter
     private String password;
+    @Column(nullable = false, length = 100)
+    @Getter @Setter
     private String firstName;
+    @Column(nullable = false, length = 100)
+    @Getter @Setter
     private String lastName;
+    @Column(name = "email_address",nullable = false, length = 100)
+    @Getter @Setter
     private String email;
+    @Getter @Setter
+    private boolean enabled;
+    private boolean tokenExpired;
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
+    private Set<Order> orders;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    @Getter @Setter
+    private Collection<Role> roles;
 
+    @Getter @Setter
+    private BigDecimal cash = new BigDecimal("0.00");
     public MyUser() {
 
     }
+
+    public MyUser(MyUser user) {
+        this.username = user.username;
+        this.password = user.password;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
+        this.email = user.email;
+        this.enabled = user.enabled;
+        this.tokenExpired = user.tokenExpired;
+        this.cash = user.cash;
+        this.roles = user.roles;
+    }
+
     public MyUser(String username,
                   String password,
                   String firstName,
                   String lastName,
-                  String email) {
+                  String email,
+                  BigDecimal cash) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+        this.cash = cash;
+        this.enabled = true;
+        this.tokenExpired = false;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
+        return getGrantedAuthorities(getPrivileges(roles));
     }
 
     @Override
@@ -108,36 +100,25 @@ public class MyUser implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
+    private List<String> getPrivileges(Collection<Role> roles) {
 
-    @Override
-    public boolean isEnabled() {
-        return true;
+        List<String> privileges = new ArrayList<>();
+        List<Privilege> collection = new ArrayList<>();
+        for (Role role : roles) {
+            privileges.add(role.getName());
+            collection.addAll(role.getPrivileges());
+        }
+        for (Privilege item : collection) {
+            privileges.add(item.getName());
+        }
+        return privileges;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MyUser myUser = (MyUser) o;
-
-        return username.equals(myUser.username);
-    }
-
-    @Override
-    public int hashCode() {
-        return username.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    private List<GrantedAuthority> getGrantedAuthorities(List<String> privileges) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (String privilege : privileges) {
+            authorities.add(new SimpleGrantedAuthority(privilege));
+        }
+        return authorities;
     }
 }

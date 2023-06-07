@@ -1,91 +1,41 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "products")
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long product_id;
+    @Getter @Setter
+    private Long id;
+    @NotNull
+    @NotBlank
+    @Getter @Setter
     private String companyName;
+    @Column(unique = true)
+    @NotNull
+    @NotBlank
+    @Getter @Setter
     private String model;
+    @NotNull
+    @Getter @Setter
     private BigDecimal price;
-    private Boolean isAvailable;
+
     @ManyToOne
     @JoinColumn(name="category_id")
+    @Getter @Setter
+    @JsonBackReference
     private Category category;
-    public Long getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(Long id) {
-        this.product_id = id;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
-    }
-
-    public void setCategory(Category _category)
-    {
-        this.category = _category;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Product product = (Product) o;
-
-        return product_id.equals(product.product_id);
-    }
-
-    @Override
-    public int hashCode() {
-        return product_id.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + product_id +
-                ", companyName='" + companyName + '\'' +
-                ", model='" + model + '\'' +
-                ", price=" + price +
-                ", isAvailable=" + isAvailable +
-                '}';
-    }
 
 }

@@ -1,41 +1,45 @@
 package uj.wmii.jwzp.hardwarerent.data;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import uj.wmii.jwzp.hardwarerent.dtos.CategoryDto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "categories")
+@NoArgsConstructor
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long category_id;
+    @Getter @Setter
+    private Long id;
+    @Column(nullable = false, length = 100)
+    @NotNull
+    @Getter @Setter
     private String categoryName;
 
-
-    public Long getCategory_id() {
-        return category_id;
-    }
-
-    public void setCategory_id(Long id) {
-        this.category_id = id;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
     @OneToMany(mappedBy="category")
+    @Getter @Setter
+    @JsonManagedReference
     private Set<Product> products;
-    public void setProducts(Set<Product> _products)
-    {
-        this.products = _products;
+
+    public Category(CategoryDto categoryDto){
+        this.categoryName = categoryDto.getCategoryName();
+        this.products = new HashSet<>();
     }
 
+    public Category(String categoryName) {
+        this.categoryName = categoryName;
+        this.products = new HashSet<>();
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,18 +47,18 @@ public class Category {
 
         Category category = (Category) o;
 
-        return category_id.equals(category.category_id);
+        return id.equals(category.id);
     }
 
     @Override
     public int hashCode() {
-        return category_id.hashCode();
+        return id.hashCode();
     }
 
     @Override
     public String toString() {
         return "Category{" +
-                "id=" + category_id +
+                "id=" + id +
                 ", categoryName='" + categoryName + '\'' +
                 '}';
     }

@@ -1,12 +1,11 @@
 package uj.wmii.jwzp.hardwarerent.services.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import uj.wmii.jwzp.hardwarerent.data.*;
 import uj.wmii.jwzp.hardwarerent.dtos.OrderDetailsDto;
 import uj.wmii.jwzp.hardwarerent.dtos.OrderDto;
-import uj.wmii.jwzp.hardwarerent.exceptions.InvalidDatesException;
-import uj.wmii.jwzp.hardwarerent.exceptions.NoEnoughMoneyException;
-import uj.wmii.jwzp.hardwarerent.exceptions.NotFoundException;
+import uj.wmii.jwzp.hardwarerent.exceptions.*;
 import uj.wmii.jwzp.hardwarerent.repositories.ArchivedProductsRepository;
 import uj.wmii.jwzp.hardwarerent.repositories.OrderDetailsRepository;
 import uj.wmii.jwzp.hardwarerent.repositories.OrdersRepository;
@@ -60,6 +59,8 @@ public class OrderServiceImpl implements OrderService {
             throw new InvalidDatesException("orderDate should be greater or equals to today date");
         if (orderDateFormated.compareTo(dueDateFormated) > 0)
             throw new InvalidDatesException("orderDate shoulf be smaller than dueDate!");
+        if (hasDuplicates(orderDto))
+            throw new ProductAlreadyInOrderException("You cannot create an order with product duplicates!");
         Order orderToAdd = new Order(user, orderDateFormated, dueDateFormated, new HashSet<>());
 
         var orderDetailsToAdd =
@@ -75,12 +76,20 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<Order> getAllOrdersForUser(MyUser user) {
-        return ordersRepository.findAllByUser(user);
+    public List<Order> getAllOrdersForUser(MyUser user, String orderStatus) {
+        if (!StringUtils.hasText(orderStatus)) {
+            return ordersRepository.findAllByUser(user);
+        }
+        OrderStatus makeFromString = OrderStatus.valueOf(orderStatus);
+        if (makeFromString != OrderStatus.CREATED && makeFromString != OrderStatus.INITIALIZED
+                && makeFromString != OrderStatus.CANCELED && makeFromString != OrderStatus.FINISHED)
+            throw new OrderStatusNotValidException("Only possible Enum values are INITIALIZED, CREATED, FINISHED and CANCELED!");
+
+        return ordersRepository.findAllByOrderStatusAndUser(makeFromString, user);
     }
 
     @Override
-    public boolean deleteOrderDetailFromOrder(MyUser user, Long orderId, Long orderDetailId) {
+    public void deleteOrderDetailFromOrder(MyUser user, Long orderId, Long orderDetailId) {
         Optional<Order> orderReturned = ordersRepository.findByUserAndId(user, orderId);
         if (orderReturned.isEmpty())
             throw new NotFoundException("Failed to find order with id: " + orderId);
@@ -94,7 +103,6 @@ public class OrderServiceImpl implements OrderService {
         myOrder.setOverallCashSum();
         orderDetailsRepository.deleteById(orderDetailId);
 
-        return true;
     }
 
     @Override
@@ -108,8 +116,9 @@ public class OrderServiceImpl implements OrderService {
         if (checkOrderDatesOverlappingForOneProduct(orderReturned.get().getOrderDate(), orderReturned.get().getDueDate(),
                 orderDetailsDto.getProductId()))
             throw new InvalidDatesException("Overlapping dates for product!");
-
         Order order = orderReturned.get();
+        if (hasDuplicatesForOne(orderDetailsDto, order))
+            throw new ProductAlreadyInOrderException("Product cannot be added to the order, product with the same id is present!");
         ArchivedProducts productToAdd = archivedProductsRepository.findById(orderDetailsDto.getProductId()).get();
 
         OrderDetails orderDetails = new OrderDetails(productToAdd, orderDetailsDto.getDescription(), order);
@@ -122,15 +131,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void payForProduct(MyUser user, Long id, String orderStatus) {
-        System.out.println("SKDAJKASD");
-        System.out.println("SKDAJKASD");
-        System.out.println("SKDAJKASD");System.out.println("SKDAJKASD");
-        System.out.println("SKDAJKASD");
-        System.out.println("SKDAJKASD");
-        System.out.println("SKDAJKASD");
-        System.out.println("SKDAJKASD");
-        System.out.println("SKDAJKASD");
-
 
         Optional<Order> orderReturned = ordersRepository.findByUserAndId(user, id);
         if (orderReturned.isEmpty())
@@ -141,11 +141,13 @@ public class OrderServiceImpl implements OrderService {
                 .distinct().toList();
 
         System.out.println(orderStatus);
-        if (OrderStatus.valueOf(orderStatus) == OrderStatus.CREATED) {
+        if (OrderStatus.valueOf(orderStatus.toUpperCase()) != OrderStatus.CREATED) {
+            throw new ChangeOrderStatusNotApplicableException("You can only change to CREATED and pay for product");
+        }
+        if (OrderStatus.valueOf(orderStatus.toUpperCase()) == OrderStatus.CREATED) {
             if (checkOrderDatesOverlappingForList(orderReturned.get().getOrderDate(), orderReturned.get().getDueDate(),
                     productIds))
                 throw new InvalidDatesException("Dates overlapping by another order!");
-            System.out.println(user.getCash());
             if (user.getCash().compareTo(orderReturned.get().getOverallCashSum()) < 0)
                 throw new NoEnoughMoneyException("You don't have enough money in your wallet!");
         }
@@ -155,25 +157,44 @@ public class OrderServiceImpl implements OrderService {
         user.setCash(user.getCash().subtract(orderReturned.get().getOverallCashSum()));
     }
 
+    @Override
+    public Optional<Order> getOrderFromAllById(Long id) {
+        return ordersRepository.findById(id);
+    }
+
 
     @Override
-    public Optional<Order> changeOrderStatus(Long id, OrderStatus orderStatus) {
+    public Optional<Order> changeOrderStatus(Long id, String orderStatus) {
         Optional<Order> savedOrder = ordersRepository.findById(id);
         if (savedOrder.isEmpty())
             return Optional.empty();
         Order existing = savedOrder.get();
-        existing.setOrderStatus(orderStatus);
+        OrderStatus makeFromString = OrderStatus.valueOf(orderStatus.toUpperCase());
+        if (makeFromString == OrderStatus.INITIALIZED || makeFromString == OrderStatus.CREATED) {
+            throw new ChangeOrderStatusNotApplicableException("Cannot change order status to " + orderStatus.toUpperCase() +
+                    ". You can change only to CANCELED or FINISHED!");
+        }
+        existing.setOrderStatus(makeFromString);
+
         return Optional.of(ordersRepository.save(existing));
 
     }
 
     @Override
-    public List<Order> getAllOrders() {
-        return ordersRepository.findAll();
+    public List<Order> getAllOrders(String orderStatus) {
+        if (!StringUtils.hasText(orderStatus)) {
+            return ordersRepository.findAll();
+        }
+        OrderStatus makeFromString = OrderStatus.valueOf(orderStatus);
+        if (makeFromString != OrderStatus.CREATED && makeFromString != OrderStatus.INITIALIZED
+                && makeFromString != OrderStatus.CANCELED && makeFromString != OrderStatus.FINISHED)
+            throw new OrderStatusNotValidException("Only possible Enum values are INITIALIZED, CREATED, FINISHED and CANCELED!");
+
+        return ordersRepository.findAllByOrderStatus(makeFromString);
     }
     @Override
-    public Optional<Order> getOrderById(Long id) {
-        return ordersRepository.findById(id);
+    public Optional<Order> getOrderById(MyUser user, Long id) {
+        return ordersRepository.findByUserAndId(user, id);
     }
     public boolean checkOrderDatesOverlapping(OrderDto orderDto,
                                               LocalDate orderDateFormated,
@@ -195,7 +216,6 @@ public class OrderServiceImpl implements OrderService {
                                                            Long productId) {
         List<Order> orders = ordersRepository.findAll();
         var targetProducts = findTargetProducts(orders, orderDateFormated, dueDateFormated);
-        System.out.println(targetProducts);
         return targetProducts.contains(productId);
     }
     public List<Long> findTargetProducts(List<Order> orders,
@@ -224,4 +244,24 @@ public class OrderServiceImpl implements OrderService {
         return sameElements.size() > 0;
     }
 
+    public boolean hasDuplicates(OrderDto orderDto) {
+        var listToCheck = orderDto.getOrderDetails().stream()
+                .map(OrderDetailsDto::getProductId).toList();
+
+        Set<Long> elements = new HashSet<>();
+        List<Long> duplicates = listToCheck.stream()
+                .filter(x -> !elements.add(x))
+                .toList();
+
+        return duplicates.size() > 0;
+    }
+
+    public boolean hasDuplicatesForOne(OrderDetailsDto orderDetailsDto, Order order) {
+        var listToCheck = order.getOrderDetails().stream()
+                .map(x -> x.getArchivedProducts().getProductId()).toList();
+        Long element = orderDetailsDto.getProductId();
+        var duplicates = listToCheck.stream().filter(x -> x.compareTo(element) == 0).toList();
+
+        return duplicates.size() > 0;
+    }
 }

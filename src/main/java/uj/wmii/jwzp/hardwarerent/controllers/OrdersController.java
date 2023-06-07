@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.*;
 
@@ -15,6 +13,7 @@ import uj.wmii.jwzp.hardwarerent.exceptions.NotExistingUserException;
 import uj.wmii.jwzp.hardwarerent.dtos.OrderDetailsDto;
 import uj.wmii.jwzp.hardwarerent.dtos.OrderDto;
 
+import uj.wmii.jwzp.hardwarerent.exceptions.NotFoundException;
 import uj.wmii.jwzp.hardwarerent.repositories.UserRepository;
 import uj.wmii.jwzp.hardwarerent.services.impl.MyUserDetailsService;
 
@@ -42,25 +41,32 @@ public class OrdersController {
         this.myUserDetailsService = myUserDetailsService;
         this.clock = clock;
     }
-    @GetMapping
-    public List<Order> getAllOrdersForUser(Authentication authentication) {
+    @GetMapping("/me")
+    public List<Order> getAllOrdersForUser(@RequestParam(required = false) String orderStatus,
+                                           Authentication authentication) {
 
         MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
 
         if (user == null)
             throw new NotExistingUserException("Please log in to have access to orders!");
 
-        return orderService.getAllOrdersForUser(user);
+        return orderService.getAllOrdersForUser(user, orderStatus);
 
     }
 
     @GetMapping("/all")
-    public List<Order> getAllOrders(Authentication authentication) {
-        return orderService.getAllOrders();
+    public List<Order> getAllOrders(Authentication authentication,
+                                    @RequestParam(required = false) String orderStatus) {
+
+        MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
+        if (user == null)
+            throw new NotExistingUserException("Please log in to have access to orders!");
+
+        return orderService.getAllOrders(orderStatus);
     }
     @PostMapping
-    public ResponseEntity createNewOrder(@RequestBody OrderDto orderDto, Authentication authentication)
-    {
+    public ResponseEntity createNewOrder(@RequestBody OrderDto orderDto,
+                                         Authentication authentication) {
         MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
 
         if (user == null)
@@ -73,23 +79,28 @@ public class OrdersController {
         return ResponseEntity.created(URI.create("/orders/" + orderAdded.getId()))
                 .body("Order has been successfully created!");
     }
-    @GetMapping("{id}")
-    public ResponseEntity getOrderById(@PathVariable Long id)
-    {
-        Optional orderReturned;
-        try{
-            orderReturned = orderService.getOrderById(id);
-            if(orderReturned.isEmpty()) {
-                LOG.info("Failed to find order with id: '{}'",id);
-                return ResponseEntity.status(404).body("Failed to find order with id: "+id);
-            }
-        }catch (Exception e)
-        {
-            LOG.error("Internal error: " + e.getMessage());
-            return ResponseEntity.internalServerError().body("internal server error"); // return error response
-        }
-        LOG.info("Proceeded request to get order with id: '{}'",id);
-        return ResponseEntity.ok().body(orderReturned);
+    @GetMapping("/me/{id}")
+    public Order getOrderById(@PathVariable("id") Long id,
+                              Authentication authentication) {
+        MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
+
+        if (user == null)
+            throw  new NotExistingUserException("Please log in to have access to orders!");
+
+        Optional<Order> orderReturned = orderService.getOrderById(user, id);
+        if (orderReturned.isEmpty())
+            throw new NotFoundException("Failed to find order with id: " + id);
+
+        return orderReturned.get();
+    }
+
+    @GetMapping("/all/{id}")
+    public Order getOrderByIdForAll(@PathVariable("id") Long id) {
+        Optional<Order> orderReturned = orderService.getOrderFromAllById(id);
+        if (orderReturned.isEmpty())
+            throw new NotFoundException("Failed to find order with id: " + id);
+
+        return orderReturned.get();
     }
 
 
@@ -107,7 +118,7 @@ public class OrdersController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/orderDetail")
+    @PutMapping("/orderDetail")
     public ResponseEntity addOrderDetailToOrder(@RequestBody OrderDetailsDto orderDetailsDto,
                                                 Authentication authentication) {
         MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
@@ -119,7 +130,7 @@ public class OrdersController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping({"{id}"})
+    @PatchMapping({"/me/{id}"})
     public ResponseEntity payForOrder(@PathVariable("id") Long id,
                                       @RequestParam String orderStatus,
                                       Authentication authentication) {
@@ -131,5 +142,13 @@ public class OrdersController {
         orderService.payForProduct(user, id ,orderStatus);
 
         return ResponseEntity.ok().body("Order status changed to " + orderStatus);
+    }
+
+    @PatchMapping("all/{id}")
+    public ResponseEntity changeOrderStatus(@PathVariable("id") Long id,
+                                            @RequestParam String orderStatus) {
+        orderService.changeOrderStatus(id, orderStatus);
+
+        return ResponseEntity.ok("Order status changed to " + orderStatus);
     }
 }

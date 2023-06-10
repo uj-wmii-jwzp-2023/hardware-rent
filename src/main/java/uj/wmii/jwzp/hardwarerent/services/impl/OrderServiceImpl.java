@@ -6,17 +6,13 @@ import uj.wmii.jwzp.hardwarerent.data.*;
 import uj.wmii.jwzp.hardwarerent.dtos.OrderDetailsDto;
 import uj.wmii.jwzp.hardwarerent.dtos.OrderDto;
 import uj.wmii.jwzp.hardwarerent.exceptions.*;
-import uj.wmii.jwzp.hardwarerent.repositories.ArchivedProductsRepository;
-import uj.wmii.jwzp.hardwarerent.repositories.OrderDetailsRepository;
-import uj.wmii.jwzp.hardwarerent.repositories.OrdersRepository;
-import uj.wmii.jwzp.hardwarerent.repositories.ProductRepository;
+import uj.wmii.jwzp.hardwarerent.repositories.*;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderDetailsService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderService;
 
 import java.time.Clock;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -31,34 +27,35 @@ public class OrderServiceImpl implements OrderService {
 
     private final ProductRepository productRepository;
     private final ArchivedProductsRepository archivedProductsRepository;
+    private final UserRepository userRepository;
 
     public OrderServiceImpl(OrdersRepository ordersRepository, OrderDetailsService orderDetailsService,
                             OrderDetailsRepository orderDetailsRepository, ProductRepository productRepository,
-                            ArchivedProductsRepository archivedProductsRepository) {
+                            ArchivedProductsRepository archivedProductsRepository, UserRepository userRepository) {
         this.ordersRepository = ordersRepository;
         this.orderDetailsService = orderDetailsService;
         this.orderDetailsRepository = orderDetailsRepository;
         this.productRepository = productRepository;
         this.archivedProductsRepository = archivedProductsRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public Optional<Order> createNewOrder(OrderDto orderDto,
                                           MyUser user,
                                           Clock clock) {
-        LocalDateTime todaysDateTime = LocalDateTime
-                .ofInstant(clock.instant(), ZoneOffset.UTC);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate todaysDate = todaysDateTime.toLocalDate();
-        LocalDate orderDateFormated =  LocalDate.parse(orderDto.getOrderDate(), formatter);
-        LocalDate dueDateFormated  = LocalDate.parse(orderDto.getDueDate(), formatter);
+        LocalDateTime todaysDateTime = LocalDateTime.ofInstant(clock.instant(), ZoneId.of("Europe/Warsaw"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        LocalDateTime orderDateFormated =  LocalDateTime.parse(orderDto.getOrderDate(), formatter);
+        LocalDateTime dueDateFormated  = LocalDateTime.parse(orderDto.getDueDate(), formatter);
 
         if (checkOrderDatesOverlapping(orderDto, orderDateFormated, dueDateFormated))
             throw new InvalidDatesException("Dates overlapping between orders. Please change dates!");
-        if (todaysDate.compareTo(orderDateFormated) > 0)
+        if (todaysDateTime.compareTo(orderDateFormated) > 0)
             throw new InvalidDatesException("orderDate should be greater or equals to today date");
         if (orderDateFormated.compareTo(dueDateFormated) > 0)
-            throw new InvalidDatesException("orderDate shoulf be smaller than dueDate!");
+            throw new InvalidDatesException("orderDate should be smaller than dueDate!");
         if (hasDuplicates(orderDto))
             throw new ProductAlreadyInOrderException("You cannot create an order with product duplicates!");
         Order orderToAdd = new Order(user, orderDateFormated, dueDateFormated, new HashSet<>());
@@ -76,7 +73,8 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<Order> getAllOrdersForUser(MyUser user, String orderStatus) {
+    public List<Order> getAllOrdersForUser(MyUser user,
+                                           String orderStatus) {
         if (!StringUtils.hasText(orderStatus)) {
             return ordersRepository.findAllByUser(user);
         }
@@ -110,6 +108,8 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> orderReturned = ordersRepository.findByUserAndId(user, orderDetailsDto.getOrderId());
         if (orderReturned.isEmpty())
             throw new NotFoundException("Failed to find order with id: " + orderDetailsDto.getOrderId());
+        if (orderReturned.get().getOrderStatus() == OrderStatus.CREATED)
+            throw new OrderDetailToOrderNotAddableException("This order is already paid!");
         Optional<Product> productReturned = productRepository.findById(orderDetailsDto.getProductId());
         if (productReturned.isEmpty())
             throw new NotFoundException("Failed to find product with id: " + orderDetailsDto.getOrderId());
@@ -117,8 +117,15 @@ public class OrderServiceImpl implements OrderService {
                 orderDetailsDto.getProductId()))
             throw new InvalidDatesException("Overlapping dates for product!");
         Order order = orderReturned.get();
+        LocalDateTime orderDate = order.getOrderDate();
+        LocalDateTime dueDate = order.getDueDate();
+        OrderDto dto = new OrderDto(order);
+        if (checkOrderDatesOverlapping(dto, orderDate, dueDate))
+            throw new InvalidDatesException("Overlapping dates!");
         if (hasDuplicatesForOne(orderDetailsDto, order))
             throw new ProductAlreadyInOrderException("Product cannot be added to the order, product with the same id is present!");
+        if (!productRepository.existsById(orderDetailsDto.getProductId()))
+            throw new NotFoundException("Product with id: " + "not found");
         ArchivedProducts productToAdd = archivedProductsRepository.findById(orderDetailsDto.getProductId()).get();
 
         OrderDetails orderDetails = new OrderDetails(productToAdd, orderDetailsDto.getDescription(), order);
@@ -139,8 +146,8 @@ public class OrderServiceImpl implements OrderService {
         var productIds = orderReturned.get().getOrderDetails()
                 .stream().map(x -> x.getArchivedProducts().getProductId())
                 .distinct().toList();
-
-        System.out.println(orderStatus);
+        if (orderReturned.get().getOrderStatus() == OrderStatus.CREATED)
+            throw new OrderStatusNotValidException("Cannot change paid order!");
         if (OrderStatus.valueOf(orderStatus.toUpperCase()) != OrderStatus.CREATED) {
             throw new ChangeOrderStatusNotApplicableException("You can only change to CREATED and pay for product");
         }
@@ -155,6 +162,7 @@ public class OrderServiceImpl implements OrderService {
         orderReturned.get().setOrderStatus(OrderStatus.valueOf(orderStatus));
         ordersRepository.save(orderReturned.get());
         user.setCash(user.getCash().subtract(orderReturned.get().getOverallCashSum()));
+        userRepository.save(user);
     }
 
     @Override
@@ -175,7 +183,6 @@ public class OrderServiceImpl implements OrderService {
                     ". You can change only to CANCELED or FINISHED!");
         }
         existing.setOrderStatus(makeFromString);
-
         return Optional.of(ordersRepository.save(existing));
 
     }
@@ -197,8 +204,8 @@ public class OrderServiceImpl implements OrderService {
         return ordersRepository.findByUserAndId(user, id);
     }
     public boolean checkOrderDatesOverlapping(OrderDto orderDto,
-                                              LocalDate orderDateFormated,
-                                              LocalDate dueDateFormated) {
+                                              LocalDateTime orderDateFormated,
+                                              LocalDateTime dueDateFormated) {
         List<Order> orders = ordersRepository.findAll();
         var productsInOrder = orderDto.getOrderDetails().stream()
                 .map(OrderDetailsDto::getProductId)
@@ -207,20 +214,19 @@ public class OrderServiceImpl implements OrderService {
         var targetProducts = findTargetProducts(orders, orderDateFormated, dueDateFormated);
         var sameElements = productsInOrder.stream()
                 .filter(targetProducts::contains).toList();
-        System.out.println(targetProducts);
         return sameElements.size() > 0;
     }
 
-    public boolean checkOrderDatesOverlappingForOneProduct(LocalDate orderDateFormated,
-                                                           LocalDate dueDateFormated,
+    public boolean checkOrderDatesOverlappingForOneProduct(LocalDateTime orderDateFormated,
+                                                           LocalDateTime dueDateFormated,
                                                            Long productId) {
         List<Order> orders = ordersRepository.findAll();
         var targetProducts = findTargetProducts(orders, orderDateFormated, dueDateFormated);
         return targetProducts.contains(productId);
     }
     public List<Long> findTargetProducts(List<Order> orders,
-                                         LocalDate orderDateFormated,
-                                         LocalDate dueDateFormated) {
+                                         LocalDateTime orderDateFormated,
+                                         LocalDateTime dueDateFormated) {
         return orders.stream()
                 .filter(x -> orderDateFormated.compareTo(x.getDueDate()) < 0
                         && dueDateFormated.compareTo(x.getOrderDate()) > 0)
@@ -233,8 +239,8 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
     }
 
-    public boolean checkOrderDatesOverlappingForList(LocalDate orderDateFormated,
-                                                     LocalDate dueDateFormated,
+    public boolean checkOrderDatesOverlappingForList(LocalDateTime orderDateFormated,
+                                                     LocalDateTime dueDateFormated,
                                                      List<Long> products) {
         List<Order> orders = ordersRepository.findAll();
         var targetProducts = findTargetProducts(orders, orderDateFormated, dueDateFormated);

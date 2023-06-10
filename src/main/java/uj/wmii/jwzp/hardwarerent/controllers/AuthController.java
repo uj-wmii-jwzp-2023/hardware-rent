@@ -37,7 +37,7 @@ public class AuthController {
             if(token == null) {
                 LOG.error("cant get token for user: '{}'",authentication.getName());
                 return ResponseEntity.internalServerError().body("internal server error"); // return error response
-            }else {
+            } else {
 
                 LOG.info("Token granted: {}", token);
             }

@@ -88,13 +88,19 @@ public class CustomErrorController {
         return ResponseEntity.status(400).body(message);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleEnumErrors(IllegalArgumentException exception) {
-        return ResponseEntity.status(400).body("Only possible Enum values are INITIALIZED, CREATED, FINISHED and CANCELED!");
-    }
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public ResponseEntity<String> handleEnumErrors(IllegalArgumentException exception) {
+//        return ResponseEntity.status(400).body("Only possible Enum values are INITIALIZED, CREATED, FINISHED and CANCELED!");
+//    }
 
     @ExceptionHandler(OrderStatusNotValidException.class)
     public ResponseEntity<String> handleOrderStatusNotValidErrors(OrderStatusNotValidException exception) {
+        String message = exception.getMessage();
+        return ResponseEntity.status(400).body(message);
+    }
+
+    @ExceptionHandler(OrderDetailToOrderNotAddableException.class)
+    public ResponseEntity<String> handleOrderDetailToOrderErrors(OrderDetailToOrderNotAddableException exception) {
         String message = exception.getMessage();
         return ResponseEntity.status(400).body(message);
     }

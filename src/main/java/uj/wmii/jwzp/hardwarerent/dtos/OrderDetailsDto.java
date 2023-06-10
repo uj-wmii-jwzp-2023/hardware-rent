@@ -25,4 +25,9 @@ public class OrderDetailsDto {
         this.description = (description == null) ? "no description": description;
         this.orderId = orderDetails.getOrder().getId();
     }
+
+    public OrderDetailsDto(Long productId, String description) {
+        this.productId = productId;
+        this.description = description;
+    }
 }

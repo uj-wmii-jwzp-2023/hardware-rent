@@ -9,6 +9,7 @@ import uj.wmii.jwzp.hardwarerent.data.*;
 import uj.wmii.jwzp.hardwarerent.repositories.*;
 
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Component
@@ -17,11 +18,11 @@ public class SetupDataLoader implements
 
     boolean alreadySetup = false;
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PrivilegeRepository privilegeRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PrivilegeRepository privilegeRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public SetupDataLoader(UserRepository userRepository, RoleRepository roleRepository, PrivilegeRepository privilegeRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -55,7 +56,19 @@ public class SetupDataLoader implements
         user.setUsername("admin");
         user.setRoles(Arrays.asList(adminRole));
         user.setEnabled(true);
+        user.setCash(new BigDecimal("100000000000.00"));
         userRepository.save(user);
+
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        MyUser user1 = new MyUser();
+        user1.setFirstName("Blagoja");
+        user1.setLastName("Mladenov");
+        user1.setPassword(passwordEncoder.encode("pass"));
+        user1.setEmail("test1@test1.com");
+        user1.setUsername("mladbago");
+        user1.setRoles(Arrays.asList(userRole));
+        user1.setEnabled(true);
+        userRepository.save(user1);
 
         alreadySetup = true;
     }

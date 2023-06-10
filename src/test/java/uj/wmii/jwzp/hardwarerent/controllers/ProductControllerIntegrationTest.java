@@ -59,7 +59,7 @@ class ProductControllerIntegrationTest {
     void testGetAllProducts() {
         List<ProductDto> dtos = productController.getAllProducts(null, null, null);
 
-        assertEquals(5, dtos.size());
+        assertEquals(15, dtos.size());
     }
 
     @Test
@@ -94,7 +94,7 @@ class ProductControllerIntegrationTest {
     @Test
     void testDeleteProductNotFound() {
         assertThrows(NotFoundException.class,
-                () -> productController.deleteProductById(7L));
+                () -> productController.deleteProductById(20L));
     }
 
     @Test
@@ -102,24 +102,24 @@ class ProductControllerIntegrationTest {
         mockMvc.perform(get("/products")
                 .queryParam("companyName", "Samsung"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(3)));
+                .andExpect(jsonPath("$.length()", is(2)));
     }
 
     @Test
     void testGetProductByPrice() throws Exception {
         mockMvc.perform(get("/products")
-                .queryParam("price", "704"))
+                .queryParam("price", "50"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(2)));
+                .andExpect(jsonPath("$.length()", is(6)));
     }
 
 
     @Test
     void testGetProductByCategoryName() throws Exception {
         mockMvc.perform(get("/products")
-                        .queryParam("categoryName", "TV"))
+                        .queryParam("categoryName", "Laptop"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(3)));
+                .andExpect(jsonPath("$.length()", is(4)));
     }
 
     @Test
@@ -146,6 +146,8 @@ class ProductControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void testPostProductWithNotExistingCategory() {
         ProductDto productToAdd = ProductDto.builder()
                 .companyName("Samsung")
@@ -163,7 +165,7 @@ class ProductControllerIntegrationTest {
         ProductDto productToAdd = ProductDto.builder()
                 .companyName("Samsung")
                 .price(new BigDecimal("333.44"))
-                .model("tv2000")
+                .model("TV QE65S95B 65\" OLED 4K 120Hz Tizen TV Dolby Atmos HDMI 2.1")
                 .categoryName("TV")
                 .build();
 

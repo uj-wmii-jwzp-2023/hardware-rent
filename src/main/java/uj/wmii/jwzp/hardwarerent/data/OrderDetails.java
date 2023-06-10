@@ -25,9 +25,9 @@ public class OrderDetails {
     @JoinTable(
             name = "order_and_order_details",
             joinColumns = @JoinColumn(
-                    name = "order_id", referencedColumnName = "id"),
+                    name = "order_detail_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
-                    name = "order_detail_id", referencedColumnName = "id"))
+                    name = "order_id", referencedColumnName = "id"))
     @Getter @Setter
     @JsonBackReference
     private Order order;

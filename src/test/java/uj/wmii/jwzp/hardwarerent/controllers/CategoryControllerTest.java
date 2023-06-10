@@ -53,7 +53,7 @@ class CategoryControllerTest {
     void testAllCategories() {
         List<Category> categories = categoryController.getAllCategories();
 
-        assertEquals(2, categories.size());
+        assertEquals(7, categories.size());
     }
 
     @Test

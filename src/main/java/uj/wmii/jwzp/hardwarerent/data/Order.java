@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Date;
 import java.util.HashSet;
@@ -15,7 +16,6 @@ import lombok.*;
 
 @Entity
 @Table(name = "orders")
-@NoArgsConstructor
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,13 +28,13 @@ public class Order {
     private MyUser user;
     @Column(name = "order_date",nullable = false)
     @Getter @Setter
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
-    private LocalDate orderDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
+    private LocalDateTime orderDate;
     @Column(name = "due_date",nullable = false)
     @Getter @Setter
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
-    private LocalDate dueDate;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
+    private LocalDateTime dueDate;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order", fetch = FetchType.EAGER)
     @Getter @Setter
     @JsonManagedReference
     private Set<OrderDetails> orderDetails;
@@ -45,7 +45,7 @@ public class Order {
     @Getter @Setter
     @Enumerated(EnumType.STRING)
     OrderStatus orderStatus;
-    public Order(MyUser user, LocalDate orderDate, LocalDate dueDate, Set<OrderDetails> orderDetails) {
+    public Order(MyUser user, LocalDateTime orderDate, LocalDateTime dueDate, Set<OrderDetails> orderDetails) {
         this.user = user;
         this.orderDate = orderDate;
         this.dueDate = dueDate;
@@ -55,11 +55,14 @@ public class Order {
     }
 
     public void setOverallCashSum() {
-        BigDecimal daysBetween = new BigDecimal(Math.abs(Period.between(orderDate, dueDate).getDays()));
-        BigDecimal toMultiply = daysBetween.divide(new BigDecimal(7), 2, RoundingMode.CEILING);
+        BigDecimal daysBetween = new BigDecimal(Math.abs(Duration.between(orderDate, dueDate).toHours()));
+        BigDecimal toMultiply = daysBetween.divide(new BigDecimal(168), 2, RoundingMode.CEILING);
         this.overallCashSum = orderDetails.stream()
                 .map(x -> x.getArchivedProducts().getPrice().multiply(toMultiply))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    public Order() {
+        this.orderDetails = new HashSet<>(); 
+    }
 }

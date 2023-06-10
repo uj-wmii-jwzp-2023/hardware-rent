@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import uj.wmii.jwzp.hardwarerent.data.*;
 
@@ -35,16 +36,14 @@ public class OrdersController {
 
     public OrdersController(OrderService orderService,
                             UserRepository userRepository,
-                            MyUserDetailsService myUserDetailsService,
-                            Clock clock) {
+                            MyUserDetailsService myUserDetailsService) {
         this.orderService = orderService;
         this.myUserDetailsService = myUserDetailsService;
-        this.clock = clock;
+        this.clock = Clock.systemUTC();
     }
     @GetMapping("/me")
-    public List<Order> getAllOrdersForUser(@RequestParam(required = false) String orderStatus,
-                                           Authentication authentication) {
-
+    public List<Order> getAllOrdersForUser(@RequestParam(required = false) String orderStatus) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
 
         if (user == null)
@@ -55,22 +54,17 @@ public class OrdersController {
     }
 
     @GetMapping("/all")
-    public List<Order> getAllOrders(Authentication authentication,
-                                    @RequestParam(required = false) String orderStatus) {
-
-        MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
-        if (user == null)
-            throw new NotExistingUserException("Please log in to have access to orders!");
-
+    public List<Order> getAllOrders(@RequestParam(required = false) String orderStatus) {
         return orderService.getAllOrders(orderStatus);
     }
     @PostMapping
-    public ResponseEntity createNewOrder(@RequestBody OrderDto orderDto,
-                                         Authentication authentication) {
+    public ResponseEntity createNewOrder(@RequestBody OrderDto orderDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
 
         if (user == null)
             throw new NotExistingUserException("Please log in to have access to orders!");
+
         Optional<Order> orderOptional = orderService.createNewOrder(orderDto, user, clock);
         if (orderOptional.isEmpty()) {
             return ResponseEntity.internalServerError().body("Error occured while creating order!");
@@ -80,8 +74,8 @@ public class OrdersController {
                 .body("Order has been successfully created!");
     }
     @GetMapping("/me/{id}")
-    public Order getOrderById(@PathVariable("id") Long id,
-                              Authentication authentication) {
+    public Order getOrderById(@PathVariable("id") Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
 
         if (user == null)
@@ -106,8 +100,8 @@ public class OrdersController {
 
     @DeleteMapping("{orderId}/{orderDetailId}")
     public ResponseEntity deleteOrderDetailFromOrder(@PathVariable("orderId") Long orderId,
-                                                 @PathVariable("orderDetailId") Long orderDetailId,
-                                                 Authentication authentication) {
+                                                 @PathVariable("orderDetailId") Long orderDetailId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
 
         if (user == null)
@@ -118,9 +112,9 @@ public class OrdersController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/orderDetail")
-    public ResponseEntity addOrderDetailToOrder(@RequestBody OrderDetailsDto orderDetailsDto,
-                                                Authentication authentication) {
+    @PostMapping("/orderDetail")
+    public ResponseEntity addOrderDetailToOrder(@RequestBody OrderDetailsDto orderDetailsDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
 
         if (user == null)
@@ -132,8 +126,8 @@ public class OrdersController {
 
     @PatchMapping({"/me/{id}"})
     public ResponseEntity payForOrder(@PathVariable("id") Long id,
-                                      @RequestParam String orderStatus,
-                                      Authentication authentication) {
+                                      @RequestParam String orderStatus) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MyUser user = myUserDetailsService.loadUserByUsername(authentication.getName());
 
         if (user == null)

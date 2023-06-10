@@ -3,12 +3,12 @@ package uj.wmii.jwzp.hardwarerent.services.impl;
 import org.springframework.stereotype.Service;
 import uj.wmii.jwzp.hardwarerent.data.ArchivedProducts;
 import uj.wmii.jwzp.hardwarerent.exceptions.NotFoundException;
-import uj.wmii.jwzp.hardwarerent.exceptions.ProductNotFoundException;
 import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.data.OrderDetails;
 import uj.wmii.jwzp.hardwarerent.dtos.OrderDetailsDto;
 import uj.wmii.jwzp.hardwarerent.mappers.ProductMapper;
 import uj.wmii.jwzp.hardwarerent.repositories.ArchivedProductsRepository;
+import uj.wmii.jwzp.hardwarerent.repositories.OrderDetailsRepository;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderDetailsService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.ProductService;
 
@@ -21,12 +21,15 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     private final ProductMapper productMapper;
 
     private final ArchivedProductsRepository archivedProductsRepository;
+    private final OrderDetailsRepository orderDetailsRepository;
 
     public OrderDetailsServiceImpl(ProductService productService, ProductMapper productMapper,
-                                   ArchivedProductsRepository archivedProductsRepository) {
+                                   ArchivedProductsRepository archivedProductsRepository,
+                                   OrderDetailsRepository orderDetailsRepository) {
         this.productService = productService;
         this.productMapper = productMapper;
         this.archivedProductsRepository = archivedProductsRepository;
+        this.orderDetailsRepository = orderDetailsRepository;
     }
     public Set<OrderDetails> createOrderDetailsListFromOrderDetailsDtoList(Set<OrderDetailsDto> orderDetailsDtoSet,
                                                                            Order order){

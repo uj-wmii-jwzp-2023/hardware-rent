@@ -16,8 +16,7 @@ import java.time.ZoneId;
 @EnableWebMvc
 public class HardwareRentApplication {
 	@Bean
-	Clock clock()
-	{
+	Clock clock() {
 		return  Clock.systemDefaultZone();
 	}
 	public static void main(String[] args) {

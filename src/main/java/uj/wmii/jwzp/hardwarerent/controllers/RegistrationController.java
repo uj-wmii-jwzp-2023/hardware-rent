@@ -61,8 +61,7 @@ public class RegistrationController {
         return ResponseEntity.ok().body("user registered successfully");
 
     }
-    public MyUser registerUser(MyUser user)
-    {
+    public MyUser registerUser(MyUser user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }

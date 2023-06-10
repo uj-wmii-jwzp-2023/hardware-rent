@@ -6,6 +6,7 @@ import lombok.Setter;
 import uj.wmii.jwzp.hardwarerent.data.Order;
 import uj.wmii.jwzp.hardwarerent.dtos.OrderDetailsDto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -22,6 +23,7 @@ public class OrderDto {
     private Set<OrderDetailsDto> orderDetails;
 
     public OrderDto(Order order) {
+        this.orderDetails = new HashSet<>();
         this.user = order.getUser().getUsername();
         this.orderDate = order.getOrderDate().toString();
         this.dueDate = order.getDueDate().toString();

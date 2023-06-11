@@ -5,9 +5,7 @@ import org.springframework.stereotype.Component;
 import uj.wmii.jwzp.hardwarerent.data.*;
 import uj.wmii.jwzp.hardwarerent.repositories.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -81,7 +79,11 @@ public class BootstrapConfiguration implements CommandLineRunner {
 
     public void readProducts(List<Category> categories) {
         List<List<String>> records = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/csvdata/products.csv"))) {
+        InputStream ioStream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream("csvdata/products.csv");
+        try (InputStreamReader isr = new InputStreamReader(ioStream);
+             BufferedReader br = new BufferedReader(isr);) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(", ");

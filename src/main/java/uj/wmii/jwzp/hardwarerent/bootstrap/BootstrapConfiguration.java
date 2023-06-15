@@ -7,9 +7,7 @@ import uj.wmii.jwzp.hardwarerent.repositories.*;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.*;
 
 @Component
@@ -21,18 +19,21 @@ public class BootstrapConfiguration implements CommandLineRunner {
     private final OrdersRepository ordersRepository;
     private final ArchivedProductsRepository archivedProductsRepository;
     private final OrderDetailsRepository orderDetailsRepository;
+    private final Clock clock;
     public BootstrapConfiguration(CategoryRepository categoryRepository,
                                   ProductRepository productRepository,
                                   UserRepository userRepository,
                                   OrdersRepository ordersRepository,
                                   ArchivedProductsRepository archivedProductsRepository,
-                                  OrderDetailsRepository orderDetailsRepository) {
+                                  OrderDetailsRepository orderDetailsRepository,
+                                  Clock clock) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.ordersRepository = ordersRepository;
         this.archivedProductsRepository = archivedProductsRepository;
         this.orderDetailsRepository = orderDetailsRepository;
+        this.clock = clock;
     }
 
 
@@ -175,7 +176,7 @@ public class BootstrapConfiguration implements CommandLineRunner {
     }
 
     public void prepareDateTime(int index, Order order) {
-        LocalDate currentDate = LocalDate.now();
+        LocalDate currentDate = LocalDateTime.ofInstant(clock.instant(), ZoneId.of("Europe/Warsaw")).toLocalDate();
         LocalDateTime futureDateTimeOrder;
         LocalDateTime futureDateTimeDue;
         if (index == 0) {

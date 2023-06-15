@@ -11,6 +11,7 @@ import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderDetailsService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderService;
 
 import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -28,22 +29,24 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final ArchivedProductsRepository archivedProductsRepository;
     private final UserRepository userRepository;
+    private final Clock clock;
 
     public OrderServiceImpl(OrdersRepository ordersRepository, OrderDetailsService orderDetailsService,
                             OrderDetailsRepository orderDetailsRepository, ProductRepository productRepository,
-                            ArchivedProductsRepository archivedProductsRepository, UserRepository userRepository) {
+                            ArchivedProductsRepository archivedProductsRepository, UserRepository userRepository,
+                            Clock clock) {
         this.ordersRepository = ordersRepository;
         this.orderDetailsService = orderDetailsService;
         this.orderDetailsRepository = orderDetailsRepository;
         this.productRepository = productRepository;
         this.archivedProductsRepository = archivedProductsRepository;
         this.userRepository = userRepository;
+        this.clock = clock;
     }
 
     @Override
     public Optional<Order> createNewOrder(OrderDto orderDto,
-                                          MyUser user,
-                                          Clock clock) {
+                                          MyUser user) {
         LocalDateTime todaysDateTime = LocalDateTime.ofInstant(clock.instant(), ZoneId.of("Europe/Warsaw"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -106,10 +109,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void addOrderDetailsToOrder(MyUser user, OrderDetailsDto orderDetailsDto) {
         Optional<Order> orderReturned = ordersRepository.findByUserAndId(user, orderDetailsDto.getOrderId());
+        LocalDateTime currentDate = LocalDateTime.ofInstant(clock.instant(), ZoneId.of("Europe/Warsaw"));
         if (orderReturned.isEmpty())
             throw new NotFoundException("Failed to find order with id: " + orderDetailsDto.getOrderId());
         if (orderReturned.get().getOrderStatus() == OrderStatus.CREATED)
             throw new OrderDetailToOrderNotAddableException("This order is already paid!");
+        if (orderReturned.get().getOrderDate().compareTo(currentDate) < 0)
+            throw new InvalidDatesException("Orderdate cannot be bigger than today's date!");
+
         Optional<Product> productReturned = productRepository.findById(orderDetailsDto.getProductId());
         if (productReturned.isEmpty())
             throw new NotFoundException("Failed to find product with id: " + orderDetailsDto.getOrderId());
@@ -143,9 +150,12 @@ public class OrderServiceImpl implements OrderService {
         if (orderReturned.isEmpty())
             throw new NotFoundException("Failed to find order with id: " + id);
 
+        LocalDateTime currentDate = LocalDateTime.ofInstant(clock.instant(), ZoneId.of("Europe/Warsaw"));
         var productIds = orderReturned.get().getOrderDetails()
                 .stream().map(x -> x.getArchivedProducts().getProductId())
                 .distinct().toList();
+        if (orderReturned.get().getOrderDate().compareTo(currentDate) < 0)
+            throw new InvalidDatesException("Orderdate cannot be bigger than today's date!");
         if (orderReturned.get().getOrderStatus() == OrderStatus.CREATED)
             throw new OrderStatusNotValidException("Cannot change paid order!");
         if (OrderStatus.valueOf(orderStatus.toUpperCase()) != OrderStatus.CREATED) {

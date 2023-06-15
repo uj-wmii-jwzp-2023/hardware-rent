@@ -5,14 +5,12 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
+import java.time.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "orders")
@@ -39,6 +37,10 @@ public class Order {
     @JsonManagedReference
     private Set<OrderDetails> orderDetails;
 
+    @CreationTimestamp
+    @Getter @Setter
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
+    LocalDateTime createdOn;
     @Getter
     private BigDecimal overallCashSum;
 

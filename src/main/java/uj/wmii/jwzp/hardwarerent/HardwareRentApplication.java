@@ -17,7 +17,7 @@ import java.time.ZoneId;
 public class HardwareRentApplication {
 	@Bean
 	Clock clock() {
-		return  Clock.systemDefaultZone();
+		return  Clock.systemUTC();
 	}
 	public static void main(String[] args) {
 

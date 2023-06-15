@@ -21,7 +21,6 @@ import uj.wmii.jwzp.hardwarerent.services.impl.MyUserDetailsService;
 import uj.wmii.jwzp.hardwarerent.services.interfaces.OrderService;
 
 import java.net.URI;
-import java.time.Clock;
 import java.util.*;
 
 @CrossOrigin
@@ -32,14 +31,12 @@ public class OrdersController {
 
     private final OrderService orderService;
     private final MyUserDetailsService myUserDetailsService;
-    private final Clock clock;
 
     public OrdersController(OrderService orderService,
                             UserRepository userRepository,
                             MyUserDetailsService myUserDetailsService) {
         this.orderService = orderService;
         this.myUserDetailsService = myUserDetailsService;
-        this.clock = Clock.systemUTC();
     }
     @GetMapping("/me")
     public List<Order> getAllOrdersForUser(@RequestParam(required = false) String orderStatus) {
@@ -65,7 +62,7 @@ public class OrdersController {
         if (user == null)
             throw new NotExistingUserException("Please log in to have access to orders!");
 
-        Optional<Order> orderOptional = orderService.createNewOrder(orderDto, user, clock);
+        Optional<Order> orderOptional = orderService.createNewOrder(orderDto, user);
         if (orderOptional.isEmpty()) {
             return ResponseEntity.internalServerError().body("Error occured while creating order!");
         }
@@ -145,4 +142,5 @@ public class OrdersController {
 
         return ResponseEntity.ok("Order status changed to " + orderStatus);
     }
+
 }

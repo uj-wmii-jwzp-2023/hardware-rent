@@ -11,7 +11,7 @@ public interface OrderService {
     Optional<Order> changeOrderStatus(Long id, String orderStatus);
     List<Order> getAllOrders(String orderStatus);
     Optional<Order> getOrderById(MyUser user, Long id);
-    Optional<Order> createNewOrder(OrderDto orderDto, MyUser user, Clock clock);
+    Optional<Order> createNewOrder(OrderDto orderDto, MyUser user);
 
     List<Order> getAllOrdersForUser(MyUser user, String orderStatus);
 

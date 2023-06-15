@@ -62,6 +62,8 @@ class OrdersControllerIntegrationTest {
     @Autowired
     WebApplicationContext webApplicationContext;
 
+    @Autowired
+    Clock clock;
     MockMvc mockMvc;
 
     @BeforeEach
@@ -285,7 +287,6 @@ class OrdersControllerIntegrationTest {
         assertEquals(new BigDecimal("99999999942.80"), userRepository.findByUsername("admin").getCash());
     }
     public void createDateForPostValid(OrderDto orderDto) {
-        Clock clock = Clock.systemUTC();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime currentDate = LocalDateTime.ofInstant(clock.instant(), ZoneId.of("Europe/Warsaw"));
         LocalDateTime futureDateTimeOrder;
@@ -299,7 +300,6 @@ class OrdersControllerIntegrationTest {
     }
 
     public void createDateForPostNotValid(OrderDto orderDto) {
-        Clock clock = Clock.systemUTC();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime currentDate = LocalDateTime.ofInstant(clock.instant(), ZoneId.of("Europe/Warsaw"));
         LocalDate futureDate = currentDate.plusDays(12).toLocalDate();
@@ -311,7 +311,6 @@ class OrdersControllerIntegrationTest {
     }
 
     public void createDateOrderDateBiggerThanDueDate(OrderDto orderDto) {
-        Clock clock = Clock.systemUTC();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime currentDate = LocalDateTime.ofInstant(clock.instant(), ZoneId.of("Europe/Warsaw"));
         LocalDateTime futureDateTimeOrder;
@@ -325,7 +324,6 @@ class OrdersControllerIntegrationTest {
     }
 
     public void createDateOrderDateSmallerThanTodaysDate(OrderDto orderDto) {
-        Clock clock = Clock.systemUTC();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime currentDate = LocalDateTime.ofInstant(clock.instant(), ZoneId.of("Europe/Warsaw"));
         LocalDateTime futureDateTimeOrder = currentDate.minusMinutes(1);
